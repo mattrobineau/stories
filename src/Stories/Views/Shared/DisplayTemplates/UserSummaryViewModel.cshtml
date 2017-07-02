@@ -1,0 +1,26 @@
+﻿@{
+    var classes = "user";
+
+    if (Model.IsBanned)
+    {
+        classes += " danger";
+    }
+}
+@model Stories.Models.ViewModels.Administration.UserSummaryViewModel
+
+<tr class="@classes">
+    <td>
+        @Model.Username
+        @if (Model.IsModerator)
+        {
+            <i class="fa fa-bolt" alt="Moderator" aria-hidden="true"></i>
+        }
+    </td>
+    <td>
+        <time datetime="@Model.CreatedDate.ToString("o")" />
+    </td>
+    <td>
+        <i class="fa fa-exclamation" aria-hidden="true"></i>
+        <i class="fa fa-id-card-o" aria-hidden="true"></i>
+    </td>
+</tr>

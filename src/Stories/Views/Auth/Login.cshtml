@@ -1,0 +1,33 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNoHeader.cshtml";
+    ViewData["Title"] = "Login";
+}
+@model Stories.Models.ViewModels.LoginViewModel
+
+<section>
+    <div id="signin" data-url="@Url.Action("Login")">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="email" class="col-sm-2 control-label">Email</label>
+                <div class="col-sm-3">
+                    <input type="email" class="form-control email" id="email">
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="password" class="col-sm-2 control-label">Password</label>
+                <div class="col-sm-3">
+                    <input type="password" class="form-control password" id="password">
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group">                
+                <div class="col-sm-2 col-sm-offset-4 actions">
+                    <button class="submit btn btn-default return-submit" type="submit">Sign In</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

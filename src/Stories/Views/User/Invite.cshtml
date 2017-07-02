@@ -1,0 +1,24 @@
+﻿@{
+    <section>
+        <div id="invite-user" data-url="@Url.Action("invite", "user")">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label for="email" class="col-sm-2 control-label">Email</label>
+                    <div class="col-sm-3">
+                        <input type="email" class="form-control email" id="email">
+                    </div>
+                    <div class="col-sm-1">
+                        <div id="success" class="control-label hidden">Sent <i class="fa fa-check" aria-hidden="true"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-2 col-sm-offset-4 actions">
+                        <button class="submit btn btn-default" type="submit">Invite</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}

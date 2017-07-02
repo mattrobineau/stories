@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Top";
+}
+@model Stories.Models.ViewModels.StoriesViewModel
+
+<section>
+    @if (Model.Stories.Any())
+    {
+        <div id="stories">
+            <ol>
+                @foreach (var model in Model.Stories)
+                {
+                    <li>
+                        @Html.DisplayFor(m => model)
+                    </li>
+                }
+            </ol>
+        </div>
+        <footer>
+            @if (Model.Stories.Count == Model.PageSize)
+            {
+                <a href="@Url.Action("New", "Home", new { page = Model.CurrentPage + 1 })">Next</a>
+            }
+        </footer>
+    }
+    else
+    {
+        <div id="stories">
+            <h1>Oops, we ran out of links!</h1>
+        </div>
+        <footer>
+            <a href="@Url.Action("New", "Home", new { page = Model.CurrentPage-1 })">Previous</a>
+        </footer>
+    }
+</section>

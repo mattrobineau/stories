@@ -1,0 +1,70 @@
+﻿@{ 
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@model Stories.Models.ViewModels.Administration.CreateUserViewModel
+
+<section>
+    <div id="create-user" data-url="@Url.Action("CreateUser", "Administration")">
+        <h2>Create User</h2>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="username" class="col-sm-2 control-label">Username</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control username" id="username">
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="email" class="col-sm-2 control-label">Email</label>
+                <div class="col-sm-3">
+                    <input type="email" class="form-control email" id="email">
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="password" class="col-sm-2 control-label">Password</label>
+                <div class="col-sm-3">
+                    <input type="password" class="form-control password" id="password">
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="confirmPassword" class="col-sm-2 control-label">Confirm Password</label>
+                <div class="col-sm-3">
+                    <input type="password" class="form-control confirmPassword" id="confirmPassword">
+                </div>
+            </div>
+        </div>
+
+        <h2>Roles</h2>
+        <div class="form-group">
+            <div class="form-check col-sm-offset-2">
+                <label class="form-check-label">
+                    <input type="checkbox" disabled="disabled" checked="checked" class="form-check-input select-role" value="User">
+                    User
+                </label>
+            </div>
+
+            @foreach (var role in Model.Roles)
+            {
+                <div class="form-check col-sm-offset-2">
+                    <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input select-role" value="@role">
+                        @role
+                    </label>
+                </div>
+            }
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-2 col-sm-offset-3 actions">
+                    <button class="submit btn btn-default" type="submit">Create</button>
+                    <button class="cancel btn btn-default" type="submit">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

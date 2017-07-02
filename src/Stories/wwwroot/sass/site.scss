@@ -1,0 +1,248 @@
+﻿@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700');
+
+/// Colors http://paletton.com/#uid=73v0u0k++tfOEZA+VHs+Xnw+xhw
+// Blues
+$grey-blue: #9ec7e2;
+$lightest-blue: #069AFB;
+$light-blue: #0079C7;
+$blue: #005A95;
+$dark-blue: #004978;
+$darkest-blue: #003659;
+
+$light-orange: #FF8E00;
+$orange: #E98200;
+$dark-orange: #BB6A00;
+$darkest-orange: #8B4E00;
+
+$bright-yellow: #ffc41d;
+$light-yellow: #FFBC00;
+$yellow: #E9AC00;
+$dark-yellow: #BB8A00;
+$darkest-yellow: #8B6700;
+
+$text-color: #333;
+
+/// Fonts
+$font: 'Open Sans', sans-serif;
+
+h1 {
+    font-size: 2em;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 1.17em;
+    font-weight: 600;
+    margin: 0;
+}
+
+h4 {
+    font-size: 1.12em;
+}
+
+h5 {
+    font-size: .83em;
+}
+
+h6 {
+    font-size: .75em;
+}
+
+.hostname {
+    font-style: italic;
+    font-size: 12px;
+    margin-left: 1em;
+    color: $grey-blue;
+}
+
+.header {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    font-size: 0.85em;
+}
+
+.header nav li {
+    padding: 0px 6px;
+}
+
+.nav-link-home {
+}
+
+div#stories ol, div#comments ol {
+    list-style-type: none;
+    padding: 0;
+}
+
+div.story, div#comments {
+    padding: 0.5em 0;
+}
+
+div.story h3 {
+    display: inline-block;
+}
+
+div.vote, div.score {
+    width: 48px;
+    text-align: center;
+}
+
+div.vote {
+    float: left;
+    display: inline-block;
+    text-align: center;
+}
+
+div.story-meta, div.comment-meta {
+    display: block;
+    text-align: left;
+}
+
+div.comment-meta {
+    padding-bottom: 2px;
+}
+
+div.story-details, div.comment-details {
+    margin-left: 48px;
+    margin-right: 48px;
+    font-size: 12px;
+}
+
+div#comments {
+    margin-top: 24px;
+}
+
+div.comment {
+    margin-bottom: 12px;
+}
+
+div.comment-content {
+    font-size: 14px;
+}
+
+div.comment-actions {
+    display: inline-block;
+    padding-left: 6px;
+}
+
+div.story-meta a {
+    color: $light-blue;
+}
+
+div.delete-story {
+    display:inline;
+}
+
+div.delete-story i.fa-trash {
+    cursor: pointer;
+}
+
+div#add-comment {
+    padding-top: 12px;
+}
+
+.add-comment {
+    margin-bottom: 12px;
+}
+
+div#add-comment button {
+    margin-right: 12px;
+}
+
+div#add-comment {
+    padding-left: 54px;
+    margin-right: 48px;
+}
+
+i.active, i.fa-chevron-up:hover {
+    color: $bright-yellow;
+    cursor: pointer;
+}
+
+i.fa-chevron-up {
+    display: block;
+}
+
+i {
+    color: $blue;
+}
+
+a {
+    color: $blue;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.btn {
+    color: #fff;
+    background-color: $light-blue;
+    padding: 3px 12px;
+    font-size: 0.9em;
+}
+
+.auth-nav {
+    float: right;
+}
+
+#addstory {
+    margin-top: 1em;
+}
+
+body {
+    font-family: $font;
+    font-weight: 400;
+    color: $text-color;
+    padding: 48px 0;
+}
+
+nav {
+    line-height: 24px;
+    background-color: $light-blue;
+}
+
+nav ul {
+    display: inline-block;
+    vertical-align: top;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+nav ul li {
+    float: left;
+}
+
+nav ul li a {
+    color: #fff
+}
+
+nav ul li a:hover {
+    color: $bright-yellow;
+}
+
+input[type="checkbox"].isauthor {
+    margin: 0;
+    vertical-align: middle;
+}
+
+.hidden {
+    visibility: hidden;
+    display: none;
+}
+
+.nopadding {
+    padding: 0px;
+}
+
+ol {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}

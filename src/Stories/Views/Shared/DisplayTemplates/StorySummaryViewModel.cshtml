@@ -1,0 +1,46 @@
+﻿@model Stories.Models.ViewModels.StorySummaryViewModel
+
+<div class="story" data-hashid="@Model.HashId">
+    <div class="vote" data-url="@Url.Action("StoryVote", "Vote")">
+        @if (Model.UserUpvoted)
+        {
+            <i class="fa fa-chevron-up active" aria-hidden="true"></i>
+        }
+        else
+        {
+            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+        }
+        <div class="score">@Model.Upvotes</div>
+    </div>
+    <div class="story-details">
+        <div class="title">
+            <a href="@Model.Url">
+                <h3>@Model.Title</h3>
+            </a>
+            @if (Model.IsDeletable)
+            {
+                <div class="delete-story" data-url="@Url.Action("Delete", "Story", new { hashId = Model.HashId })">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </div>
+            }
+            <span class="hostname">@Model.Hostname</span>
+
+        </div>
+        <div class="story-meta">
+            @if (Model.IsAuthor)
+            {
+                <span class="username">written by</span>
+            }
+            else
+            {
+                <span class="username">posted by</span>
+            }
+            <a href="#"><span class="username">@Model.SubmitterUsername</span></a>
+            <time datetime="@Model.SubmittedDate"></time>
+            <a href="@Url.Action("Index","Story", new { hashId = Model.HashId })">
+                <i class="fa fa-comments" aria-hidden="true"></i>
+                <span class="comments">@Model.CommentCount</span>
+            </a>
+        </div>
+    </div>
+</div>

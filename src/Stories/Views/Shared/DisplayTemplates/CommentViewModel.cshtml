@@ -1,0 +1,32 @@
+﻿@model Stories.Models.ViewModels.CommentViewModel
+<div class="comment" data-hashid="@Model.HashId">
+    <div class="vote" data-url="@Url.Action("CommentVote", "Vote")">
+        <i class="fa fa-chevron-up" aria-hidden="true"></i>
+        <div class="score">@Model.Upvotes</div>
+    </div>
+    <div class="comment-details">
+        <div class="comment-meta">
+            <a href="#"><span class="username">@Model.Username</span></a>
+            <time datetime="@Model.SubmittedDate"></time>
+            <div class="comment-actions">
+                <a href="#" class="link"><i class="fa fa-link" aria-hidden="true" title="link to comment"></i></a>
+                <a href="#" class="reply"><i class="fa fa-reply" aria-hidden="true" title="reply to comment"></i></a>
+                <a href="#" class="quote"><i class="fa fa-quote-right" aria-hidden="true" title="quote comment"></i></a>
+                <a href="#" class="delete"><i class="fa fa-trash" aria-hidden="true" title="delete comment"></i></a>
+            </div>
+        </div>
+        <div class="comment-content">
+            @Html.Raw(Model.Content)
+        </div>
+    </div>
+    @if (Model.Replies.Any())
+    {
+        <ol>
+            @foreach (var reply in Model.Replies)
+            {
+                <li>@Html.DisplayFor(m => reply)</li>
+            }
+        </ol>
+    }
+</div>
+

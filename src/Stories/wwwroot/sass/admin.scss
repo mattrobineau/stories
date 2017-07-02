@@ -1,0 +1,21 @@
+﻿$light-blue: #0079C7;
+
+div.user div {
+    display: inline-block;
+}
+
+#create-user {
+    margin-top: 48px;
+}
+#create-user div.form-check {
+    padding-left: 6px;
+}
+
+#create-user h2 {
+    border-bottom: $light-blue solid;
+    margin-bottom: 20px;
+}
+
+#create-user div.actions {
+    text-align: right;
+}

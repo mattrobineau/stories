@@ -1,0 +1,16 @@
+﻿@model Stories.Models.ViewModels.User.ReferralViewModel
+
+<section>
+    <div id="referral" data-url="@Url.Action("referral", "user")">
+        @if (!Model.CodeIsValid)
+        {
+            <h3>Invalid referral code</h3>
+        }
+        else
+        {
+            @Html.HiddenFor(m => m.Code)
+
+            @Html.Partial("_SignUp", (Stories.Models.ViewModels.SignupViewModel)Model)
+        }
+    </div>
+</section>

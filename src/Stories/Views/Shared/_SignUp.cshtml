@@ -1,0 +1,43 @@
+﻿@model Stories.Models.ViewModels.SignupViewModel
+
+<div id="signup-form">
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label for="username" class="col-sm-2 control-label">Username</label>
+            <div class="col-sm-3">
+                @Html.EditorFor(m => m.Username, new { htmlAttributes = new { @class = "form-control username" } })
+            </div>
+        </div>
+    </div>
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label for="email" class="col-sm-2 control-label">Email</label>
+            <div class="col-sm-3">
+                @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "form-control email" } })
+            </div>
+        </div>
+    </div>
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label for="password" class="col-sm-2 control-label">Password</label>
+            <div class="col-sm-3">
+                @Html.EditorFor(m => m.Password, new { htmlAttributes = new { @class = "form-control password", type = "password" } })
+            </div>
+        </div>
+    </div>
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label for="confirmpassword" class="col-sm-2 control-label">Confirm Password</label>
+            <div class="col-sm-3">
+                @Html.EditorFor(m => m.ConfirmPassword, new { htmlAttributes = new { @class = "form-control confirmPassword", type = "password" } })
+            </div>
+        </div>
+    </div>
+    <div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-sm-2 col-sm-offset-4 actions">
+                <button class="submit btn btn-default return-submit" type="submit">Sign Up</button>
+            </div>
+        </div>
+    </div>
+</div>

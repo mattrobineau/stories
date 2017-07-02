@@ -1,0 +1,16 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@model Stories.Models.ViewModels.Administration.UsersViewModel
+
+<section>
+    <table class="table table-condensed table-hover">
+        <thead></thead>
+        <tbody>
+            @foreach (var summary in Model.Users)
+            {
+                    @Html.DisplayFor(m => summary)
+            }
+        </tbody>
+    </table>
+</section>

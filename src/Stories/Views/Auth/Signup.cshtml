@@ -1,0 +1,7 @@
+﻿@model Stories.Models.ViewModels.SignupViewModel
+
+<section>
+    <div id="signup" data-url="@Url.Action("SignUp", "Auth")">
+       @Html.Partial("_SignUp", Model)
+    </div>
+</section>

@@ -1,0 +1,25 @@
+﻿@model Stories.Models.StoryViewModels.CreateViewModel
+<section>
+    <div id="addstory" data-url="@Url.Action("Create", "Story")">
+        <div class="form-group">
+            <label for="title">Title</label><br />
+            <input id="title" class="title form-control" />
+        </div>
+        <div class="form-group">
+            <label for="url">Url</label><br />
+            <input id="url" class="url form-control" />
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label><br />
+            <textarea id="description" class="description form-control" rows="5"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="isAuthor">I am the author</label>
+            <input id="isAuthor" type="checkbox" class="isauthor form-check" />
+        </div>
+        <div class="actions">
+            <button class="submit btn btn-default" type="submit">Submit</button>
+            <button class="reset btn btn-default" type="reset">Reset</button>
+        </div>
+    </div>
+</section>

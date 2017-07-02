@@ -1,0 +1,20 @@
+﻿@model Stories.Models.ViewModels.StoryViewModel
+<section>
+    @Html.DisplayFor(m => m.Summary)
+
+    <div id="add-comment" data-url="@Url.Action("Add","Comment")">
+        <textarea class="form-control add-comment" rows="5"></textarea>
+        <div class="btn-block">
+            <button class="add-comment-btn btn">Post</button>
+            <button class="preview-comment btn">Preview</button>
+        </div>
+    </div>
+</section>
+<section>
+    <div id="comments" data-get="@Url.Action("Get","Comment")">
+        @foreach (var comment in Model.Comments)
+        {
+            @Html.DisplayFor(m => comment)
+        }
+    </div>
+</section>
