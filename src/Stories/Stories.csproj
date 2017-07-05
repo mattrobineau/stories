@@ -60,6 +60,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="1.1.2" />
     <PackageReference Include="Hashids.net" Version="1.2.2" />
     <PackageReference Include="NLog" Version="5.0.0-beta09" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.4.1" />
     <PackageReference Include="Npgsql" Version="3.2.4.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="1.1.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
@@ -95,6 +96,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Stories.Data\Stories.Data.csproj" />
     <ProjectReference Include="..\Stories.Messaging\Stories.Messaging.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="nlog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

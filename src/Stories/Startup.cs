@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
+using NLog.Web;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
@@ -85,8 +87,7 @@ namespace Stories
 
             InitializeContainer(app);
 
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            loggerFactory.AddNLog();
 
             // Todo: This has some setup to do so we can start monitoring
             // https://blogs.msdn.microsoft.com/webdev/2015/05/19/application-insights-for-asp-net-5-youre-in-control/
@@ -111,6 +112,8 @@ namespace Stories
             app.UseStaticFiles();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+
+            app.AddNLogWeb();
 
             app.UseMvc(routes =>
             {

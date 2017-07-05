@@ -62,7 +62,7 @@ namespace Stories.Services
             var storyId = ids.Decode(hashId).First();
 
             var story = await StoriesDbContext.Stories.Include(s => s.User)
-                                                      .Include(s => s.Comments)
+                                                      .Include(s => s.Comments)                                                      
                                                       .SingleOrDefaultAsync(s => s.Id == storyId);
 
             if (story == null)
@@ -75,8 +75,12 @@ namespace Stories.Services
                 Summary = MapToStorySummaryViewModel(story, hashId, userId, userUpvoted)
             };
 
-            foreach (var comment in story.Comments.OrderByDescending(c => c.Score.Value).Where(c => c.ParentCommentId == null))
-                model.Comments.Add(MapCommentToCommentViewModel(comment));
+            var upvotedComments = await StoriesDbContext.Votes.Where(v => v.CommentId != null && v.UserId == userId)
+                                                              .Select(v => (int)v.CommentId)
+                                                              .ToListAsync();
+
+            foreach (var comment in story.Comments.OrderByDescending(c => c.Score?.Value).Where(c => c.ParentCommentId == null))
+                model.Comments.Add(MapCommentToCommentViewModel(comment, upvotedComments));
 
             return model;
         }
@@ -159,13 +163,13 @@ namespace Stories.Services
             };
         }
 
-        private CommentViewModel MapCommentToCommentViewModel(Comment comment)
+        private CommentViewModel MapCommentToCommentViewModel(Comment comment, List<int> upvotedComments)
         {
             var model = new CommentViewModel();
 
             foreach (var reply in comment.Replies.OrderByDescending(c => c.Score.Value))
             {
-                model.Replies.Add(MapCommentToCommentViewModel(reply));
+                model.Replies.Add(MapCommentToCommentViewModel(reply, upvotedComments));
             }
 
             var hashIds = new Hashids(minHashLength: 5);
@@ -177,6 +181,7 @@ namespace Stories.Services
             model.SubmittedDate = comment.CreatedDate.ToString("o");
             model.Username = comment.User.Username;
             model.Upvotes = comment.Upvotes;
+            model.UserUpvoted = upvotedComments.Any(id => id == comment.Id);
 
             return model;
         }

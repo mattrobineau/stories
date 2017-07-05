@@ -17,5 +17,6 @@ namespace Stories.Models.ViewModels
         public string SubmittedDate { get; set; }
         public int Upvotes { get; set; }
         public string Username { get; set; }
+        public bool UserUpvoted { get; set; }
     }
 }
