@@ -1,5 +1,6 @@
 ﻿using RabbitMQ.Client;
 using Stories.Messaging.Providers;
+using System;
 using System.Text;
 
 namespace Stories.Messaging.Services
@@ -7,6 +8,7 @@ namespace Stories.Messaging.Services
     public sealed class RabbitMQMessageService : IMessageService
     {
         private readonly IRabbitMQConnectionProvider ConnectionProvider;
+        //private readonly ILogger<RabbitMQMessageService> Logger;
 
         public RabbitMQMessageService(IRabbitMQConnectionProvider connectionProvider)
         {

@@ -61,7 +61,7 @@ namespace Stories
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.AddDbContext<StoriesDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("NpgsqlConnection"), b => b.MigrationsAssembly("Stories")));
+            services.AddDbContext<StoriesDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("NpgsqlConnection"), b => b.MigrationsAssembly("Stories")), ServiceLifetime.Scoped);
 
             services.AddMvc();
             services.AddRouting(options => options.LowercaseUrls = true);
@@ -138,22 +138,24 @@ namespace Stories
             container.RegisterMvcViewComponents(app);
 
             // Add application services.
-            container.Register<IDbContext>(() => app.ApplicationServices.GetService<StoriesDbContext>());
+            //container.Register<IDbContext>(() => app.ApplicationServices.GetService<StoriesDbContext>(), Lifestyle.Scoped);
+            container.Register<IDbContext>(() => app.GetRequiredRequestService<StoriesDbContext>(), Lifestyle.Scoped);
+
             container.Register<IStoryService, StoryService>();
             container.Register<IAuthenticationService, AuthenticationService>();
             container.Register<IPasswordService, PasswordService>();
             container.Register<IUserService, UserService>();
             container.Register<ICommentService, CommentService>();
-            container.Register<IVoteService, VoteService>();
+            container.Register<IVoteService, VoteService>(Lifestyle.Scoped);
             container.Register(typeof(IValidator<>), new[] { typeof(IValidator<>).GetTypeInfo().Assembly });
             container.Register<IEmailRule, EmailRule>();
             container.Register<IReferralCodeRule, ReferralCodeRule>();
             container.Register<IReferralService, ReferralService>();
-            container.Register<IVoteQueueService, VoteQueueService>();
+            container.Register<IVoteQueueService, VoteQueueService>(Lifestyle.Scoped);
 
             var AmpqOptions = Configuration.GetSection("AMQPOptions").Get<AMQPOptions>();
-            container.Register<IRabbitMQConnectionProvider>(() => new RabbitMQConnectionProvider(AmpqOptions), Lifestyle.Singleton);
-            container.Register<IMessageService, RabbitMQMessageService>();
+            container.Register<IRabbitMQConnectionProvider>(() => new RabbitMQConnectionProvider(AmpqOptions), Lifestyle.Scoped);
+            container.Register<IMessageService, RabbitMQMessageService>(Lifestyle.Scoped);
 
             MailgunOptions mailgunOptions = Configuration.GetSection("Mailgun").Get<MailgunOptions>();
             container.Register<IMailService>(() => new MailgunEmailService(mailgunOptions));
