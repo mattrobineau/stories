@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stories.Constants;
+using Stories.Models.Comment;
 using Stories.Models.ViewModels;
 using Stories.Services;
 using Stories.Validation.Validators;
@@ -12,10 +14,18 @@ namespace Stories.Controllers
     {
         private readonly ICommentService CommentService;
         private readonly IValidator<AddCommentViewModel> AddCommentViewModelValidator;
-        public CommentController(ICommentService commentService, IValidator<AddCommentViewModel> addCommentViewModelValidator )
+        private readonly IValidator<DeleteCommentModel> DeleteCommentModelValidator;
+        private readonly IValidator<UpdateCommentModel> UpdateCommentModelValidator;
+
+        public CommentController(ICommentService commentService, 
+                                 IValidator<AddCommentViewModel> addCommentViewModelValidator, 
+                                 IValidator<DeleteCommentModel> deleteCommentModelValidator,
+                                 IValidator<UpdateCommentModel> updateCommentModelValidator)
         {
             CommentService = commentService;
             AddCommentViewModelValidator = addCommentViewModelValidator;
+            DeleteCommentModelValidator = deleteCommentModelValidator;
+            UpdateCommentModelValidator = updateCommentModelValidator;
         }
 
         public async Task<IActionResult> Get(string hashId)
@@ -26,7 +36,7 @@ namespace Stories.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = Roles.User)]
         public async Task<IActionResult> Add(AddCommentViewModel model)
         {
             var validationResult = AddCommentViewModelValidator.Validate(model);
@@ -47,6 +57,51 @@ namespace Stories.Controllers
             var commentModel = await CommentService.Add(model);
 
             return Json(new { CommentHashId = commentModel.HashId, Status = true });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Roles.User)]
+        public async Task<IActionResult> Delete(DeleteCommentModel model)
+        {            
+            if(!Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId))
+            {
+                return Json(new { Status = false, Message = "Error deleting comment." });
+            }
+
+            model.UserId = userId;
+
+            var validationResult = DeleteCommentModelValidator.Validate(model);
+
+            if(!validationResult.IsValid)
+            {
+                return Json(new { Status = validationResult.IsValid, Messages = validationResult.Messages });
+            }
+
+            var isDeleted = await CommentService.Delete(model);
+            return Json(new { Status = isDeleted });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Roles.User)]
+        public async Task<IActionResult> Update(UpdateCommentModel model)
+        {
+            if(!Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId))
+            {
+                return Json(new { Status = false, Message = "Error updating comment." });
+            }
+
+            model.UserId = userId;
+
+            var validationResult = UpdateCommentModelValidator.Validate(model);
+
+            if(!validationResult.IsValid)
+            {
+                return Json(new { status = validationResult.IsValid, Messages = validationResult.Messages });
+            }
+
+            var result = CommentService.Update(model);
+
+            return null;
         }
     }
 }

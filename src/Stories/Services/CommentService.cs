@@ -3,6 +3,7 @@ using HashidsNet;
 using Microsoft.EntityFrameworkCore;
 using Stories.Data.DbContexts;
 using Stories.Data.Entities;
+using Stories.Models.Comment;
 using Stories.Models.ViewModels;
 using System.Linq;
 using System.Threading.Tasks;
@@ -52,9 +53,9 @@ namespace Stories.Services
             return MapCommentToCommentViewModel(comment.Entity);
         }
 
-        public async Task<bool> Delete(string hashId)
+        public async Task<bool> Delete(DeleteCommentModel model)
         {
-            var commentId = new Hashids(minHashLength: 5).Decode(hashId).FirstOrDefault();
+            var commentId = new Hashids(minHashLength: 5).Decode(model.HashId).FirstOrDefault();
 
             if (commentId == 0)
                 return false;
@@ -64,6 +65,11 @@ namespace Stories.Services
             comment.IsDeleted = true;
 
             return await StoriesDbContext.SaveChangesAsync() > 0;
+        }
+
+        public async Task<CommentViewModel> Update(UpdateCommentModel model)
+        {
+            return new CommentViewModel();
         }
 
         private CommentViewModel MapCommentToCommentViewModel(Comment comment)
