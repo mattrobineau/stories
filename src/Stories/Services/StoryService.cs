@@ -167,7 +167,7 @@ namespace Stories.Services
         {
             var model = new CommentViewModel();
 
-            foreach (var reply in comment.Replies.OrderByDescending(c => c.Score.Value))
+            foreach (var reply in comment.Replies.OrderByDescending(c => c?.Score?.Value))
             {
                 model.Replies.Add(MapCommentToCommentViewModel(reply, upvotedComments));
             }
