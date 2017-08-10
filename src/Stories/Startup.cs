@@ -137,8 +137,7 @@ namespace Stories
             container.RegisterMvcControllers(app);
             container.RegisterMvcViewComponents(app);
 
-            // Add application services.
-            //container.Register<IDbContext>(() => app.ApplicationServices.GetService<StoriesDbContext>(), Lifestyle.Scoped);
+            // Add application services.            
             container.Register<IDbContext>(() => app.GetRequiredRequestService<StoriesDbContext>(), Lifestyle.Scoped);
 
             container.Register<IStoryService, StoryService>();
