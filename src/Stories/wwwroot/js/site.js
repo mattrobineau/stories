@@ -58,6 +58,14 @@
             return false;
         });
 
+        $("#addstory").on("click", "button.reset", function () {
+            var $container = $(this).closest("#addstory");
+
+            $container.find("input").each(function () { $(this).val(""); });
+            $container.find("textarea").each(function () { $(this).val("");})
+            $container.find("input:checked").each(function () { $(this).attr('checked', false);})
+        });
+
         $("#add-comment").on("click", "button.add-comment-btn", function () {
             var $this = $(this);
             var $textarea = $this.parent().closest("#add-comment").find("textarea.add-comment");
