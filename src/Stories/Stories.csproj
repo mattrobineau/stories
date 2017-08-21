@@ -13,16 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot/css\.admin.css.swp" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="wwwroot\js\admin.js" />
-    <Content Include="wwwroot\js\time.js" />
-    <Content Include="wwwroot\sass\admin.scss" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="wwwroot\**\*">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
@@ -96,6 +86,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Stories.Data\Stories.Data.csproj" />
     <ProjectReference Include="..\Stories.Messaging\Stories.Messaging.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

@@ -8,7 +8,6 @@ namespace Stories.Messaging.Services
     public sealed class RabbitMQMessageService : IMessageService
     {
         private readonly IRabbitMQConnectionProvider ConnectionProvider;
-        //private readonly ILogger<RabbitMQMessageService> Logger;
 
         public RabbitMQMessageService(IRabbitMQConnectionProvider connectionProvider)
         {

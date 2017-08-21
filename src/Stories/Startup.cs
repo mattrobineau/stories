@@ -46,8 +46,6 @@ namespace Stories
                 builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
-            env.ConfigureNLog("nlog.config");
-
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -90,6 +88,8 @@ namespace Stories
             InitializeContainer(app);
 
             loggerFactory.AddNLog();
+            loggerFactory.ConfigureNLog("nlog.config");
+            app.AddNLogWeb();
 
             // Todo: This has some setup to do so we can start monitoring
             // https://blogs.msdn.microsoft.com/webdev/2015/05/19/application-insights-for-asp-net-5-youre-in-control/
@@ -147,6 +147,7 @@ namespace Stories
             container.Register<ICommentService, CommentService>();
             container.Register<IVoteService, VoteService>(Lifestyle.Scoped);
             container.Register(typeof(IValidator<>), new[] { typeof(IValidator<>).GetTypeInfo().Assembly });
+            container.RegisterConditional(typeof(IValidator<>), typeof(NullValidator<>), c => !c.Handled);
             container.Register<IEmailRule, EmailRule>();
             container.Register<IReferralCodeRule, ReferralCodeRule>();
             container.Register<IReferralService, ReferralService>();
@@ -158,6 +159,8 @@ namespace Stories
 
             MailgunOptions mailgunOptions = Configuration.GetSection("Mailgun").Get<MailgunOptions>();
             container.Register<IMailService>(() => new MailgunEmailService(mailgunOptions));
+
+            container.RegisterConditional(typeof(Logging.ILogger), ctx => typeof(Logging.NLogAdaptor<>).MakeGenericType(ctx.Consumer.ImplementationType), Lifestyle.Singleton, context => true);
         }
     }
 }

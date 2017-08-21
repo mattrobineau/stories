@@ -80,7 +80,7 @@ namespace Stories.Services
             {
                 Content = comment.IsDeleted ? "<deleted>" : comment.Content,
                 HashId = hashIds.Encode(comment.Id),
-                StoryHashId = hashIds.Encode(comment.Story.Id),
+                StoryHashId = hashIds.Encode(comment.StoryId),
                 SubmittedDate = comment.CreatedDate.ToString("o"),
                 Username = comment.User.Username,
                 Upvotes = comment.Upvotes,
