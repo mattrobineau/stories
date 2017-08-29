@@ -12,7 +12,12 @@
             </div>
         </div>
         <div class="change-password">
+            <h2 class="underline">Change Password</h2>
             @Html.Partial("_ChangePassword.cshtml", Model.ChangePasswordViewModel)
+        </div>
+        <div>
+            <h2 class="underline">Invite user</h2>
+            @Html.Partial("Invite.cshtml")
         </div>
     </div>
 </section>

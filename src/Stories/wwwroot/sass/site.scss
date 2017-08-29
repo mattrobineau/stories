@@ -134,7 +134,7 @@ div.story-meta a {
 }
 
 div.delete-story {
-    display:inline;
+    display: inline;
 }
 
 div.delete-story i.fa-trash {
@@ -245,4 +245,13 @@ ol {
     list-style-type: none;
     margin: 0;
     padding: 0;
+}
+
+#invite-user .submit {
+    float: right;
+}
+
+h2.underline {
+    border-bottom: $light-blue solid;
+    margin-bottom: 20px;
 }
