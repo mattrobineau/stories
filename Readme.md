@@ -1,7 +1,7 @@
 # What is dotnetsignals?
 Dotnetsignals (.Net Signals) is a link aggregator written entirely in C# and running on .Net Core.
 
-The current goal is to build a community around sharing .Net knowledge by giving it's user a place to share relevant .Net links to articles, blogs, projects, etc. The community is able to filter out noise by voting to the top the links the community deems to be the best.
+The current goal is to build a community around sharing .Net knowledge by giving its users a place to share relevant .Net links to articles, blogs, projects, etc. The community is able to filter out noise by voting to the top the links the community deems to be the best.
 
 # Instructions on running the dotnetsignals project
 
