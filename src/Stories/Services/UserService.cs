@@ -3,7 +3,6 @@ using Stories.Constants;
 using Stories.Data.DbContexts;
 using Stories.Data.Entities;
 using Stories.Models;
-using Stories.Models.Administration;
 using Stories.Models.User;
 using Stories.Models.ViewModels.Administration;
 using System;
@@ -118,23 +117,24 @@ namespace Stories.Services
                 UserId = user.Id
             };
         }
+        
+        public async Task<UserModel> GetUser(string username)
+        {
+            var user = await StoriesDbContext.Users.SingleOrDefaultAsync(u => u.Username == username);
+
+            return new UserModel
+            {
+                Username = user.Username,
+                IsBanned = user.IsBanned,
+                CreatedDate = user.CreatedDate,
+                Roles = user.Roles.Select(r => new RoleModel { Id = r.RoleId, Name = r.Role.Name }).ToList(),
+                UserId = user.Id
+            };
+        }
 
         public bool UpdateUser()
         {
             throw new NotImplementedException();
-        }
-
-        public async Task<bool> BanUser(BanUserModel model)
-        {
-            var userBan = await StoriesDbContext.UserBans.AddAsync(new UserBan {
-                BannedByUserId = model.BannedByUserId,
-                ExpiryDate = model.ExpiryDate,
-                Notes = model.Notes,
-                Reason = model.Reason,
-                UserId = model.UserId
-            });
-
-            return await StoriesDbContext.SaveChangesAsync() > 1;
         }
 
         public async Task<bool> UsernameAvailable(string username)

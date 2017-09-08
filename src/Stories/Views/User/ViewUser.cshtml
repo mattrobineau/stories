@@ -1,0 +1,23 @@
+@{
+    ViewData["Title"] = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model Stories.Models.ViewModels.User.UserViewModel
+
+<section>
+    <div class="container">
+        <div class="user-details">
+            <div>
+                <h1>@Model.Username</h1>
+                <div>
+                    Joined
+                    <time datetime="@Model.CreatedDate"></time>
+                </div>
+            </div>
+        </div>
+        <div>
+
+        </div>
+    </div>
+</section>
+
