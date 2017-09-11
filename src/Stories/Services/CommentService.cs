@@ -30,7 +30,7 @@ namespace Stories.Services
             if (comment == null)
                 return null;
 
-            return MapCommentToCommentViewModel(comment);
+            return await MapCommentToCommentViewModel(comment);
         }
 
         public async Task<CommentViewModel> Add(AddCommentViewModel model)
@@ -42,15 +42,14 @@ namespace Stories.Services
                 ContentMarkdown = model.CommentMarkdown,
                 Content = CommonMarkConverter.Convert(model.CommentMarkdown),
                 StoryId = hashIds.Decode(model.StoryHashId).First(),
-                UserId = model.UserId,
-                
+                UserId = model.UserId
             });
 
             await StoriesDbContext.SaveChangesAsync();
 
             VoteQueueService.QueueCommentVote(comment.Entity.Id);
 
-            return MapCommentToCommentViewModel(comment.Entity);
+            return await MapCommentToCommentViewModel(comment.Entity);
         }
 
         public async Task<bool> Delete(DeleteCommentModel model)
@@ -72,9 +71,10 @@ namespace Stories.Services
             return new CommentViewModel();
         }
 
-        private CommentViewModel MapCommentToCommentViewModel(Comment comment)
+        private async Task<CommentViewModel> MapCommentToCommentViewModel(Comment comment)
         {
             var hashIds = new Hashids(minHashLength: 5);
+            var username = await StoriesDbContext.Users.Where(u => u.Id == comment.UserId).Select(u => u.Username).FirstOrDefaultAsync();
 
             return new CommentViewModel
             {
@@ -82,7 +82,7 @@ namespace Stories.Services
                 HashId = hashIds.Encode(comment.Id),
                 StoryHashId = hashIds.Encode(comment.StoryId),
                 SubmittedDate = comment.CreatedDate.ToString("o"),
-                Username = comment.User.Username,
+                Username = username,
                 Upvotes = comment.Upvotes,
                 IsEdited = comment.IsEdited
             };
