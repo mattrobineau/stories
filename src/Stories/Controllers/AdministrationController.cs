@@ -103,6 +103,14 @@ namespace Stories.Controllers
         }
 
         [Roles(Roles.Admin, Roles.Moderator)]
+        public async Task<IActionResult> BanUser(Guid userId)
+        {
+            var model = new BanUserViewModel();
+
+            return View(model);
+        }
+
+        [Roles(Roles.Admin, Roles.Moderator)]
         [HttpPost]
         public async Task<IActionResult> BanUser(BanUserViewModel model)
         {

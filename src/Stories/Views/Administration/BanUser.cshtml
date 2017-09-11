@@ -1,0 +1,41 @@
+@{
+    ViewData["Title"] = "BanUser";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@model Stories.Models.ViewModels.Administration.BanUserViewModel
+
+<section>
+    <div id="banuser" data-url="@Url.Action("BanUser")">
+        <h1 class="underline">@Model.Username</h1>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="expiry" class="col-sm-2 control-label">Expiry</label>
+                <i class="fa fa-question-circle" aria-hidden="true"></i>
+                <div class="col-sm-3">
+                    <input id="expiry" class="form-control expiry" type="date" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="reason" class="col-sm-2 control-label">Reason</label>
+                <div class="col-sm-3">
+                    <textarea id="reason" class="form-control reason"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="notes" class="col-sm-2 control-label">Notes</label>
+                <div class="col-sm-3">
+                    <textarea id="notes" class="form-control notes"></textarea>
+                </div>
+            </div>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-2 col-sm-offset-3 actions">
+                        <button class="submit btn btn-default" type="submit">Ban @Model.Username</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
