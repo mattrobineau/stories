@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Stories.Attributes;
 using Stories.Constants;
+using Stories.Models.Administration;
 using Stories.Models.User;
 using Stories.Models.ViewModels.Administration;
 using Stories.Models.ViewModels.User;
@@ -15,11 +16,13 @@ namespace Stories.Controllers
     [Roles(Roles.Moderator, Roles.Admin)]
     public class AdministrationController : BaseController
     {
+        private readonly IBanService BanService;
         private readonly IUserService UserService;
         private readonly IValidator<CreateUserViewModel> CreateUserValidator;
 
-        public AdministrationController(IUserService userService, IValidator<CreateUserViewModel> createUserValidator)
+        public AdministrationController(IUserService userService, IValidator<CreateUserViewModel> createUserValidator, IBanService banService)
         {
+            BanService = banService;
             UserService = userService;
             CreateUserValidator = createUserValidator;
         }
@@ -103,7 +106,28 @@ namespace Stories.Controllers
         [HttpPost]
         public async Task<IActionResult> BanUser(BanUserViewModel model)
         {
-            return null;
+            if(!Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId))
+            {
+                return Json(new { Status = false, Message = "Could not ban user." });
+            }
+
+            var banModel = new BanUserModel
+            {
+                BannedByUserId = userId,
+                ExpiryDate = model.ExpiryDate,
+                Notes = model.Notes,
+                Reason = model.Reason,
+                UserId = model.UserId
+            };
+
+            // Validate banModel
+
+            if(await BanService.BanUser(banModel))
+            {
+                return Json(new { Status = true });
+            }
+
+            return Json(new { Status = false });
         }
     }
 }
