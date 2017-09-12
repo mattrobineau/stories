@@ -20,17 +20,36 @@
 
             createUser(data).done(function (data) {
                 if (data.status == false) {
-                    $("div#error").removeClass("hidden").append('<div class="error">' + data.message + '</div>');
+                    showErrors(data.Messages);
                     return false;
                 }
                 else {
-                    if (!$("div#error").hasClass("hidden")) {
-                        $("div#error").addClass("hidden");
-                    }
+                    showErrors();
                 }
             });
 
             return false;
+        });
+
+        $("#banuser").on('click', 'div.actions button.submit', function () {
+            var $parent = $(this).closest("#banuser");
+
+            var data = {
+                UserId: $parent.data("uid"),
+                ExpiryDate: $parent.find("#expiry").val(),
+                Reason: $parent.find("#reason").val(),
+                Notes: $parent.find("#notes").val()
+            };
+
+            banUser(data).done(function () {
+                var $errorDiv = $("div#error");
+                if (data.status == false) {
+                    showErrors(data.Messages);
+                    return false;
+                } else {
+                    showErrors();
+                }
+            });
         });
     });
 
@@ -41,5 +60,33 @@
             dataType: "json",
             data: data
         });
+    };
+
+    function banUser(data) {
+        return $.ajax({
+            url: $("#banuser").data("url"),
+            type: "POST",
+            dataType: "json",
+            data: data,
+        });
+    };
+
+    function showErrors(messages) {
+        var $errorDiv = $("div#error");
+
+        if (!messages || messages.length <= 0) {
+            if (!$errorDiv.hasClass("hidden"))
+                $errorDiv.addClass("hidden");
+
+            $errorDiv.find(".error").remove();
+            return;
+        }
+
+        if ($errorDiv.hasClass('hidden'))
+            $errorDiv.removeClass('hidden');
+
+        for (var i = 0; i < messages.length; i++) {
+            $errorDiv.append("<div></div>").addClass("error").text(messages[i]);
+        }
     };
 }(window.jQuery, window, document));

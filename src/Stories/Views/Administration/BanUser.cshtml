@@ -6,7 +6,7 @@
 @model Stories.Models.ViewModels.Administration.BanUserViewModel
 
 <section>
-    <div id="banuser" data-url="@Url.Action("BanUser")">
+    <div id="banuser" data-url="@Url.Action("BanUser")" data-uid="@Model.UserId">
         <h1 class="underline">@Model.Username</h1>
         <div class="form-horizontal">
             <div class="form-group">

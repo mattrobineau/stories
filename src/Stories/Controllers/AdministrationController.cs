@@ -19,12 +19,14 @@ namespace Stories.Controllers
         private readonly IBanService BanService;
         private readonly IUserService UserService;
         private readonly IValidator<CreateUserViewModel> CreateUserValidator;
+        private readonly IValidator<BanUserModel> BanUserModelValidator;
 
-        public AdministrationController(IUserService userService, IValidator<CreateUserViewModel> createUserValidator, IBanService banService)
+        public AdministrationController(IUserService userService, IValidator<CreateUserViewModel> createUserValidator, IBanService banService, IValidator<BanUserModel> banUserModelValidator)
         {
             BanService = banService;
             UserService = userService;
             CreateUserValidator = createUserValidator;
+            BanUserModelValidator = banUserModelValidator;
         }
 
         public async Task<IActionResult> Index()
@@ -105,7 +107,7 @@ namespace Stories.Controllers
         [Roles(Roles.Admin, Roles.Moderator)]
         public async Task<IActionResult> BanUser(Guid userId)
         {
-            var model = new BanUserViewModel();
+            var model = new BanUserViewModel() { UserId = userId };
 
             return View(model);
         }
@@ -116,7 +118,7 @@ namespace Stories.Controllers
         {
             if(!Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId))
             {
-                return Json(new { Status = false, Message = "Could not ban user." });
+                return Json(new { Status = false, Messages = new string[] { "User not found." } });
             }
 
             var banModel = new BanUserModel
@@ -128,14 +130,19 @@ namespace Stories.Controllers
                 UserId = model.UserId
             };
 
-            // Validate banModel
+            var validationResult = BanUserModelValidator.Validate(banModel);
+
+            if (!validationResult.IsValid)
+            {
+                return Json(new { Status = validationResult.IsValid, Messages = validationResult.Messages });
+            }
 
             if(await BanService.BanUser(banModel))
             {
                 return Json(new { Status = true });
             }
 
-            return Json(new { Status = false });
+            return Json(new { Status = false, Messages = new string[] { "Unknown error occured" } });
         }
     }
 }
