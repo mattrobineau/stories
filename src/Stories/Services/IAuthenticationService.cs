@@ -1,5 +1,5 @@
 ﻿using Stories.Models;
-using Stories.Models.User;
+using Stories.Models.Users;
 using System.Threading.Tasks;
 
 namespace Stories.Services

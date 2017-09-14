@@ -1,4 +1,4 @@
-﻿using Stories.Models.User;
+﻿using Stories.Models.Users;
 using Stories.Models.ViewModels.Administration;
 using System;
 using System.Threading.Tasks;

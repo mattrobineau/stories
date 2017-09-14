@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Stories.Models;
-using Stories.Models.User;
-using Stories.Models.ViewModels.User;
 using System;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 
 namespace Stories.Services
 {

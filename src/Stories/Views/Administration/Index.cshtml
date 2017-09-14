@@ -9,7 +9,27 @@
         <tbody>
             @foreach (var summary in Model.Users)
             {
-                    @Html.DisplayFor(m => summary)
+                <tr class="user" data-uid="@summary.UserId">
+                    <td>
+                        @summary.Username
+                        <i class="fa fa-bolt" alt="Moderator" aria-hidden="true"></i>
+                    </td>
+                    <td>
+                        <time datetime="@summary.CreatedDate.ToString("o")" />
+                    </td>
+                    <td>
+                        <i class="fa fa-exclamation" aria-hidden="true"></i>
+                        <a alt="Ban User" href="@Url.Action("BanUser","Administration", new { userId = summary.UserId })">
+                            @if (summary.IsBanned) { 
+                                <i class="fa fa-ban active" aria-hidden="true"></i>
+                            }
+                            else
+                            {
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                            }
+                        </a>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>

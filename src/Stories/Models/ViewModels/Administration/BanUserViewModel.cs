@@ -8,6 +8,6 @@ namespace Stories.Models.ViewModels.Administration
         public string Username { get; set; }
         public string Reason { get; set; }
         public string Notes { get; set; }
-        public DateTime ExpiryDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
     }
 }

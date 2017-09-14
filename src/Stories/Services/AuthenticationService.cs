@@ -2,7 +2,7 @@
 using Stories.Data.DbContexts;
 using Stories.Data.Entities;
 using Stories.Models;
-using Stories.Models.User;
+using Stories.Models.Users;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

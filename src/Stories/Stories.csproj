@@ -80,6 +80,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\Administration\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 

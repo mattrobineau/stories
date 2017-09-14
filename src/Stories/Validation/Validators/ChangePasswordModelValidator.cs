@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Stories.Data.DbContexts;
-using Stories.Models.User;
+using Stories.Models.Users;
 using Stories.Services;
 using Stories.Validation.Validators;
 using System.Linq;

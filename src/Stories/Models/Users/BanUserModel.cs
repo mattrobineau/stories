@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Stories.Models.Administration
+namespace Stories.Models.Users
 {
     public class BanUserModel
     {

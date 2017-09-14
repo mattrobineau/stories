@@ -19,3 +19,8 @@ div.user div {
 #create-user div.actions {
     text-align: right;
 }
+
+i.active, i.fa-chevron-up:hover {
+    color: #ff0000;
+    cursor: pointer;
+}

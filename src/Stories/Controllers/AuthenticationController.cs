@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stories.Constants;
-using Stories.Models.User;
+using Stories.Models.Users;
 using Stories.Models.ViewModels;
 using Stories.Services;
 using Stories.Validation.Validators;

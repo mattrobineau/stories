@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Stories.Attributes;
 using Stories.Constants;
-using Stories.Models.User;
+using Stories.Models.Users;
 using Stories.Models.ViewModels;
 using Stories.Models.ViewModels.User;
 using Stories.Services;
@@ -49,11 +49,28 @@ namespace Stories.Controllers
                 ChangePasswordViewModel = new ChangePasswordViewModel(),
                 Username = userModel.Username,
                 IsBanned = userModel.IsBanned,
-                BanReason = userModel.BanReason,
+                BanReason = userModel.BanModel.Reason,
                 CreatedDate = userModel.CreatedDate.ToString("o")
             };
 
             return View(model);
+        }
+
+        [Route("user/{username}")]
+        public async Task<IActionResult> ViewUser(string username)
+        {
+            var userModel = await UserService.GetUser(username);
+
+            var model = new UserViewModel
+            {
+                Username = userModel.Username,
+                IsBanned = userModel.IsBanned,
+                BanReason = userModel.BanModel.Reason,
+                CreatedDate = userModel.CreatedDate.ToString("o"),
+                //RecentComments = ,
+                //RecentStories = 
+            };
+            return View();
         }
 
         [Authorize(Roles = Roles.User)]
@@ -95,7 +112,7 @@ namespace Stories.Controllers
             if (!Guid.TryParse(code, out Guid referralCode))
             {
                 model.CodeIsValid = false;
-                return View(code);
+                return View(model);
             }
 
             var referral = await ReferralService.Get(referralCode);

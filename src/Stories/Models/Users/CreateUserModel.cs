@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Stories.Models.User
+namespace Stories.Models.Users
 {
     public class CreateUserModel
     {

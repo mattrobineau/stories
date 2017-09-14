@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Stories.Data.DbContexts;
 using Stories.Data.Entities;
-using Stories.Models.Administration;
+using Stories.Models.Users;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

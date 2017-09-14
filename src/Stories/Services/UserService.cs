@@ -3,7 +3,7 @@ using Stories.Constants;
 using Stories.Data.DbContexts;
 using Stories.Data.Entities;
 using Stories.Models;
-using Stories.Models.User;
+using Stories.Models.Users;
 using Stories.Models.ViewModels.Administration;
 using System;
 using System.Collections.Generic;
@@ -104,8 +104,17 @@ namespace Stories.Services
         {
             var user = await StoriesDbContext.Users.Where(u => u.Id.Equals(userId))
                                                    .Include(u => u.Roles)
-                                                   .ThenInclude(ur => ur.Role)
+                                                   .ThenInclude(ur => ur.Role)                                                   
                                                    .SingleAsync();
+
+            UserBan userBan = null;
+
+            if(user.IsBanned)
+            {
+                userBan = StoriesDbContext.UserBans.Where(ub => ub.UserId == user.Id)
+                                                   .OrderByDescending(ub => ub.CreatedDate)
+                                                   .FirstOrDefault();
+            }
 
             return new UserModel
             {
@@ -114,7 +123,14 @@ namespace Stories.Services
                 IsBanned = user.IsBanned,
                 CreatedDate = user.CreatedDate,
                 Roles = user.Roles.Select(r => new RoleModel { Id = r.RoleId, Name = r.Role.Name }).ToList(),
-                UserId = user.Id
+                UserId = user.Id,
+                BanModel = new BanUserModel
+                {
+                    UserId = user.Id,
+                    ExpiryDate = userBan?.ExpiryDate,
+                    Notes = userBan?.Notes,
+                    Reason = userBan?.Reason
+                }
             };
         }
         

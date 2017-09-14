@@ -1,4 +1,4 @@
-﻿using Stories.Models.Administration;
+﻿using Stories.Models.Users;
 using Stories.Validation.BusinessRules;
 
 namespace Stories.Validation.Validators

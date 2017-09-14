@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Stories.Attributes;
 using Stories.Constants;
-using Stories.Models.Administration;
-using Stories.Models.User;
+using Stories.Models.Users;
 using Stories.Models.ViewModels.Administration;
 using Stories.Models.ViewModels.User;
 using Stories.Services;
@@ -48,10 +47,10 @@ namespace Stories.Controllers
 
             var model = new UserViewModel
             {
-                BanReason = user.BanReason,
+                BanReason = user.BanModel.Reason,
                 CreatedDate = user.CreatedDate.ToString("o"),
                 IsBanned = user.IsBanned,
-                Username = user.Username
+                Username = user.Username,
             };
 
             return View(model);
@@ -107,7 +106,19 @@ namespace Stories.Controllers
         [Roles(Roles.Admin, Roles.Moderator)]
         public async Task<IActionResult> BanUser(Guid userId)
         {
-            var model = new BanUserViewModel() { UserId = userId };
+            var user = await UserService.GetUser(userId);
+
+            if (user == null)
+                return NotFound();
+
+            var model = new BanUserViewModel
+            {
+                UserId = userId,
+                ExpiryDate = user.BanModel.ExpiryDate,
+                Notes = user.BanModel.Notes,
+                Reason = user.BanModel.Reason,
+                Username = user.Username
+            };
 
             return View(model);
         }
