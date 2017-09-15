@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Administration - .Net Signals</title>
-
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
@@ -35,13 +34,12 @@
         </nav>
     </div>
     <div class="container container-fluid body-content">
-        <div id="#error" class="hidden"></div>
+        <div id="error" class="row hidden"></div>
         @RenderBody()
         <footer>
             <p>&copy; 2017 - dotnetsignals.com</p>
         </footer>
     </div>
-
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
@@ -62,7 +60,6 @@
         <script src="~/js/admin.min.js" asp-append-version="true"></script>
         <script src="~/js/time.min.js" asp-append-version="true"></script>
     </environment>
-
     @RenderSection("scripts", required: false)
 </body>
 </html>

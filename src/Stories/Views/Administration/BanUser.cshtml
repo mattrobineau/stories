@@ -13,19 +13,19 @@
                 <label for="expiry" class="col-sm-2 control-label">Expiry</label>
                 <i class="fa fa-question-circle" aria-hidden="true"></i>
                 <div class="col-sm-3">
-                    <input id="expiry" class="form-control expiry" type="date" />
+                    @Html.EditorFor(m => m.ExpiryDate, new { htmlAttributes = new { id = "expiry", @class = "form-control expiry", @type = "date" } })
                 </div>
             </div>
             <div class="form-group">
                 <label for="reason" class="col-sm-2 control-label">Reason</label>
                 <div class="col-sm-3">
-                    <textarea id="reason" class="form-control reason"></textarea>
+                    @Html.TextAreaFor(m => m.Reason, new { id = "reason", @class = "form-control reason" })
                 </div>
             </div>
             <div class="form-group">
                 <label for="notes" class="col-sm-2 control-label">Notes</label>
                 <div class="col-sm-3">
-                    <textarea id="notes" class="form-control notes"></textarea>
+                    @Html.TextAreaFor(m => m.Notes, new { id = "notes", @class = "form-control notes" })
                 </div>
             </div>
             <div class="form-horizontal">
@@ -38,4 +38,3 @@
         </div>
     </div>
 </section>
-

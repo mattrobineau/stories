@@ -41,10 +41,10 @@
                 Notes: $parent.find("#notes").val()
             };
 
-            banUser(data).done(function () {
+            banUser(data).done(function (data) {
                 var $errorDiv = $("div#error");
                 if (data.status === false) {
-                    showErrors(data.Messages);
+                    showErrors(data.messages);
                     return false;
                 } else {
                     showErrors();
@@ -86,7 +86,7 @@
             $errorDiv.removeClass('hidden');
 
         for (var i = 0; i < messages.length; i++) {
-            $errorDiv.append("<div></div>").addClass("error").text(messages[i]);
+            $errorDiv.append($("<div></div>").addClass("error").append($("<span></span>").text(messages[i])));
         }
     }
 }(window.jQuery, window, document));

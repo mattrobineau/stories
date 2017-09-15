@@ -24,3 +24,11 @@ i.active, i.fa-chevron-up:hover {
     color: #ff0000;
     cursor: pointer;
 }
+
+div#error {
+    color: #D8000C;
+    background: #FFBABA;
+    width: calc(100% + 30px);
+    position: relative;
+    padding: 6px 24px;
+}

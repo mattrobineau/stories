@@ -153,6 +153,7 @@ namespace Stories
             container.Register<IReferralService, ReferralService>();
             container.Register<IVoteQueueService, VoteQueueService>(Lifestyle.Scoped);
             container.Register<IBanService, BanService>(Lifestyle.Scoped);
+            container.Register<IUserRules, UserRules>(Lifestyle.Scoped);
 
             var AmpqOptions = Configuration.GetSection("AMQPOptions").Get<AMQPOptions>();
             container.Register<IRabbitMQConnectionProvider>(() => new RabbitMQConnectionProvider(AmpqOptions), Lifestyle.Scoped);
