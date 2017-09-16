@@ -3,6 +3,7 @@ using Stories.Data.DbContexts;
 using Stories.Data.Entities;
 using Stories.Models;
 using Stories.Models.Referral;
+using Stories.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +22,13 @@ namespace Stories.Services
             MailService = mailService;            
         }
 
-        public async Task<bool> SendInvite(string email, Guid userId)
+        public async Task<bool> SendInvite(InviteModel model)
         {
             var referral = await StoriesDbContext.Referrals.AddAsync(new Referral()
             {
                 Code = Guid.NewGuid(),
-                Email = email,
-                ReferrerUserId = userId,
+                Email = model.Email,
+                ReferrerUserId = model.ReferrerUserId,
                 ExpiryDate = DateTime.UtcNow.AddDays(7)
             });
 
@@ -38,7 +39,7 @@ namespace Stories.Services
 
             var mailModel = new MailgunMailModel
             {
-                To = new List<string> { email },
+                To = new List<string> { model.Email },
                 Subject = "Invitation to join the .Net Signals community",
                 Text = $"You have been invited to join the .Net Signals community.\n\n If you wish to join, go to https://dotnetsignals.com/user/referral/{referral.Entity.Code.ToString()}\n\n .Net Signals Team",
                 Html = $"You have been invited to join the .Net Signals community.<br/><br/> "

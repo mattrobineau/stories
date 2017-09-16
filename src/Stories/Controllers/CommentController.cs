@@ -99,7 +99,7 @@ namespace Stories.Controllers
                 return Json(new { status = validationResult.IsValid, Messages = validationResult.Messages });
             }
 
-            var result = CommentService.Update(model);
+            var result = await CommentService.Update(model);
 
             return null;
         }

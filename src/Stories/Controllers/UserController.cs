@@ -23,9 +23,10 @@ namespace Stories.Controllers
         private readonly IReferralService ReferralService;
         private readonly IValidator<SignupViewModel> SignupValidator;
         private readonly IValidator<ChangePasswordModel> ChangePasswordValidator;
+        private readonly IValidator<InviteModel> InviteModelValidator;
 
         public UserController(IUserService userService, IAuthenticationService authenticationService, IEmailRule emailBusinessRule, IMailService mailService, IReferralService referralService,
-                              IValidator<SignupViewModel> signupValidator, IValidator<ChangePasswordModel> changePasswordValidator)
+                              IValidator<SignupViewModel> signupValidator, IValidator<ChangePasswordModel> changePasswordValidator, IValidator<InviteModel> inviteModelValidator)
         {
             UserService = userService;
             AuthenticationService = authenticationService;
@@ -34,6 +35,7 @@ namespace Stories.Controllers
             ReferralService = referralService;
             SignupValidator = signupValidator;
             ChangePasswordValidator = changePasswordValidator;
+            InviteModelValidator = inviteModelValidator;
         }
 
         [Authorize(Roles = Roles.User)]
@@ -167,13 +169,17 @@ namespace Stories.Controllers
         [Roles(Roles.User)]
         public async Task<IActionResult> Invite(string email)
         {
-            if (!EmailBusinessRule.Validate(email))
-                return Json(new { Status = false, Message = "Invalid email address." });
-
             Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId);
 
-            if (!await ReferralService.SendInvite(email, userId))
-                return Json(new { Status = false, Message = "Error sending email. Try again later." });
+            var inviteModel = new InviteModel { Email = email, ReferrerUserId = userId };
+
+            var validationResult = InviteModelValidator.Validate(inviteModel);
+
+            if (!validationResult.IsValid)
+                return Json(new { Status = false, Messages = validationResult.Messages });
+
+            if (!await ReferralService.SendInvite(inviteModel))
+                return Json(new { Status = false, Messages = new string[] { "Error sending invite. Try again later." } });
 
             return Json(new { Status = true });
         }
