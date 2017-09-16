@@ -26,7 +26,7 @@ namespace Stories.Services
             if (user == null)
                 return false;
 
-            UserBan userBan = await DbContext.UserBans.FirstOrDefaultAsync(u => u.UserId == model.UserId);
+            UserBan userBan = await GetUserBan(user.Id);
 
             if (userBan == null)
                 userBan = new UserBan();
@@ -44,10 +44,35 @@ namespace Stories.Services
 
             return await DbContext.SaveChangesAsync() > 0;
         }
+
+        public async Task<BanUserModel> GetModel(Guid userId)
+        {
+            var userBan = await GetUserBan(userId);
+
+            if (userBan == null)
+                return null;
+
+            return new BanUserModel
+            {
+                BannedByUserId = userBan.BannedByUserId,
+                ExpiryDate = userBan.ExpiryDate,
+                Notes = userBan.Notes,
+                Reason = userBan.Reason,
+                UserId = userBan.UserId
+            };
+        }
+
+        private async Task<UserBan> GetUserBan(Guid userId)
+        {
+            return await DbContext.UserBans.Where(ub => ub.UserId == userId)
+                                           .OrderByDescending(ub => ub.ExpiryDate ?? DateTime.MaxValue)
+                                           .FirstOrDefaultAsync();
+        }
     }
 
     public interface IBanService
     {
         Task<bool> BanUser(BanUserModel model);
+        Task<BanUserModel> GetModel(Guid userId);
     }
 }

@@ -1,19 +1,20 @@
-﻿using Stories.Models.ViewModels;
+﻿using Stories.Models.Story;
 using Stories.Services;
+using System;
 using System.Threading.Tasks;
 
 namespace Stories.Validation.Validators
 {
-    public class AddCommentViewModelValidator : IValidator<AddCommentViewModel>
+    public class CreateStoryModelValidator : IValidator<CreateStoryModel>
     {
         private readonly IUserService UserService;
 
-        public AddCommentViewModelValidator(IUserService userService)
+        public CreateStoryModelValidator(IUserService userService)
         {
             UserService = userService;
         }
 
-        public ValidationResult Validate(AddCommentViewModel instance)
+        public ValidationResult Validate(CreateStoryModel instance)
         {
             var result = new ValidationResult { IsValid = true };
 
@@ -32,16 +33,16 @@ namespace Stories.Validation.Validators
                 return result;
             }
 
-            if (string.IsNullOrEmpty(instance.CommentMarkdown))
+            if (string.IsNullOrEmpty(instance.Title))
             {
                 result.IsValid = false;
-                result.Messages.Add("Comment body cannot be empty.");
+                result.Messages.Add("Story must have a title.");
             }
 
-            if(string.IsNullOrEmpty(instance.StoryHashId))
+            if (!string.IsNullOrEmpty(instance.Url) && !Uri.IsWellFormedUriString(instance.Url, UriKind.Absolute))
             {
                 result.IsValid = false;
-                result.Messages.Add("Cannot submit a comment to a non-existant story.");
+                result.Messages.Add("The story url is invalid.");
             }
 
             return result;

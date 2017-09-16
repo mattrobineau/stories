@@ -1,22 +1,41 @@
 ﻿using HashidsNet;
 using Stories.Data.DbContexts;
 using Stories.Models.Comment;
+using Stories.Services;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Stories.Validation.Validators
 {
     public class DeleteCommentModelValidator : IValidator<DeleteCommentModel>
     {
         private readonly IDbContext DbContext;
+        private readonly IUserService UserService;
 
-        public DeleteCommentModelValidator(IDbContext dbContext)
+        public DeleteCommentModelValidator(IDbContext dbContext, IUserService userService)
         {
             DbContext = dbContext;
+            UserService = userService;
         }
 
         public ValidationResult Validate(DeleteCommentModel instance)
         {
             var result = new ValidationResult { IsValid = false };
+
+            var user = Task.Run(async () => await UserService.GetUser(instance.UserId)).Result;
+
+            if (user == null)
+            {
+                result.IsValid = false;
+                result.Messages.Add("Error: Please sign in again.");
+            }
+
+            if (user.IsBanned)
+            {
+                result.IsValid = false;
+                result.Messages.Add("You account is banned.");
+                return result;
+            }
 
             var hashIds = new Hashids(minHashLength: 5);
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Stories.Attributes;
 using Stories.Constants;
+using Stories.Models.Story;
 using Stories.Models.StoryViewModels;
 using Stories.Models.ViewModels;
 using Stories.Services;
@@ -15,13 +16,13 @@ namespace Stories.Controllers
     {
         private IStoryService StoryService { get; set; }
         private IUserService UserService { get; set; }
-        private IValidator<CreateViewModel> CreateViewModelValidator { get; set; }
+        private IValidator<CreateStoryModel> CreateStoryModelValidator { get; set; }
 
-        public StoryController(IStoryService storyService, IUserService userService, IValidator<CreateViewModel> createViewModelValidator)
+        public StoryController(IStoryService storyService, IUserService userService, IValidator<CreateStoryModel> createStoryModelValidator)
         {
             StoryService = storyService;
             UserService = userService;
-            CreateViewModelValidator = createViewModelValidator;
+            CreateStoryModelValidator = createStoryModelValidator;
         }
 
         public async Task<IActionResult> Index(string hashId)
@@ -62,14 +63,24 @@ namespace Stories.Controllers
                 return Json(new { Status = false, Message = "Error adding story." });
             }
 
-            var validationResult = CreateViewModelValidator.Validate(model);
+            var createStoryModel = new CreateStoryModel
+            {
+                DescriptionMarkdown = model.DescriptionMarkdown,
+                Id = model.Id,
+                IsAuthor = model.IsAuthor,
+                Title = model.Title,
+                Url = model.Url,
+                UserId = userId,
+            };
+
+            var validationResult = CreateStoryModelValidator.Validate(createStoryModel);
 
             if (!validationResult.IsValid)
             {
                 return Json(new { Status = validationResult.IsValid, Messages = validationResult.Messages });
             }
 
-            var summary = await StoryService.Create(model, CurrentUser.Name, userId);
+            var summary = await StoryService.Create(createStoryModel);
 
             return Json(new { Status = true });
         }

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Stories.Data.DbContexts;
 using Stories.Data.Entities;
 using Stories.Extensions;
+using Stories.Models.Story;
 using Stories.Models.StoryViewModels;
 using Stories.Models.ViewModels;
 using System;
@@ -26,7 +27,7 @@ namespace Stories.Services
             VoteQueueService = voteQueueService;
         }
 
-        public async Task<StorySummaryViewModel> Create(CreateViewModel model, string username, Guid userId)
+        public async Task<StorySummaryViewModel> Create(CreateStoryModel model)
         {
             UriBuilder uri = null;
 
@@ -43,7 +44,7 @@ namespace Stories.Services
                 DescriptionMarkdown = model.DescriptionMarkdown,
                 Description = CommonMarkConverter.Convert(model.DescriptionMarkdown),
                 Url = uri?.Uri.ToString(),
-                UserId = userId,
+                UserId = model.UserId,
                 UserIsAuthor = model.IsAuthor,
             });
 
@@ -53,7 +54,7 @@ namespace Stories.Services
 
             VoteQueueService.QueueStoryVote(story.Entity.Id);
 
-            return MapToStorySummaryViewModel(story.Entity, hashIds.Encode(story.Entity.Id), userId, false);
+            return MapToStorySummaryViewModel(story.Entity, hashIds.Encode(story.Entity.Id), model.UserId, false);
         }
 
         public async Task<StoryViewModel> Get(string hashId, Guid? userId)
@@ -127,7 +128,7 @@ namespace Stories.Services
         }
 
         private StorySummaryViewModel MapToStorySummaryViewModel(Story story, string hashId, Guid? userId, bool userUpvoted)
-        {
+        {            
             UriBuilder uri = null;
 
             if (string.IsNullOrEmpty(story.Url))
