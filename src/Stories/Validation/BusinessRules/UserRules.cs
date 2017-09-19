@@ -17,5 +17,10 @@ namespace Stories.Validation.BusinessRules
         {
             return DbContext.Users.Any(u => u.Id == userId);
         }
+
+        public bool UserBanPreventsLogin(string email)
+        {
+            return DbContext.UserBans.Any(u => u.User.Email == email && u.ExpiryDate == null);
+        }
     }
 }
