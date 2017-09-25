@@ -47,7 +47,7 @@ namespace Stories.Validation.Validators
             var userHasPrivileges = DbContext.UserRoles.Any(ur => ur.UserId == instance.UserId &&
                                                           (ur.Role.Name == Roles.Admin || ur.Role.Name == Roles.Moderator));
 
-            if(!userHasPrivileges && !StoryRules.UserIsSubmitter(instance.StoryId, instance.UserId))
+            if(!userHasPrivileges || !StoryRules.UserIsSubmitter(instance.StoryId, instance.UserId))
             {
                 result.IsValid = false;
                 result.Messages.Add("You do not have the permissions to delete this story.");
