@@ -13,6 +13,12 @@
                     Joined
                     <time datetime="@Model.CreatedDate"></time>
                 </div>
+                @if(Model.IsBanned)
+                {
+                    <div>
+                        User has been banned.
+                    </div>
+                }
             </div>
         </div>
         <div>
