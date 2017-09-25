@@ -6,7 +6,6 @@ using Stories.Data.DbContexts;
 using Stories.Data.Entities;
 using Stories.Extensions;
 using Stories.Models.Story;
-using Stories.Models.StoryViewModels;
 using Stories.Models.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -62,8 +61,7 @@ namespace Stories.Services
             var ids = new Hashids(minHashLength: 5);
             var storyId = ids.Decode(hashId).First();
 
-            var story = await StoriesDbContext.Stories.Include(s => s.User)
-                                                      .Include(s => s.Comments)
+            var story = await StoriesDbContext.Stories.Include(s => s.Comments)
                                                       .SingleOrDefaultAsync(s => s.Id == storyId);
 
             if (story == null)
@@ -100,8 +98,7 @@ namespace Stories.Services
         {
             var model = new StoriesViewModel() { CurrentPage = page, PageSize = pageSize };
 
-            var stories = await StoriesDbContext.Stories.Include(s => s.User)
-                                                        .Include(s => s.Comments)
+            var stories = await StoriesDbContext.Stories.Include(s => s.Comments)
                                                         .Include(s => s.Score)
                                                         .OrderByDescending(s => s.Score != null)
                                                         .ThenBy(sort)
@@ -129,6 +126,8 @@ namespace Stories.Services
 
         private StorySummaryViewModel MapToStorySummaryViewModel(Story story, string hashId, Guid? userId, bool userUpvoted)
         {
+            var user = StoriesDbContext.Users.First(u => u.Id == userId);
+
             UriBuilder uri = null;
 
             if (string.IsNullOrEmpty(story.Url))
@@ -153,7 +152,7 @@ namespace Stories.Services
                 Url = uri.ToString(),
                 Hostname = uri.Host,
                 Upvotes = story.Upvotes,
-                SubmitterUsername = story.User.IsBanned ? "[banned]" : story.User.Username,
+                SubmitterUsername = user.IsBanned ? "[banned]" : user.Username,
                 Slug = story.Title.ToSlug(),
                 IsAuthor = story.UserIsAuthor,
                 UserUpvoted = userUpvoted,
