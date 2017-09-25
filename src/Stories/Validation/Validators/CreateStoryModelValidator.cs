@@ -1,4 +1,4 @@
-﻿using Stories.Models.Story;
+﻿using Stories.Models.Stories;
 using Stories.Services;
 using System;
 using System.Threading.Tasks;
@@ -29,7 +29,7 @@ namespace Stories.Validation.Validators
             if (user.IsBanned)
             {
                 result.IsValid = false;
-                result.Messages.Add("You account is banned.");
+                result.Messages.Add("Your account is banned.");
                 return result;
             }
 

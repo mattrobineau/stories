@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Stories.Data.DbContexts;
 using Stories.Data.Entities;
 using Stories.Extensions;
-using Stories.Models.Story;
+using Stories.Models.Stories;
 using Stories.Models.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -126,7 +126,7 @@ namespace Stories.Services
 
         private StorySummaryViewModel MapToStorySummaryViewModel(Story story, string hashId, Guid? userId, bool userUpvoted)
         {
-            var user = StoriesDbContext.Users.First(u => u.Id == userId);
+            var user = StoriesDbContext.Users.Single(u => u.Id == userId);
 
             UriBuilder uri = null;
 
@@ -184,20 +184,11 @@ namespace Stories.Services
             return model;
         }
 
-        public async Task<bool> Delete(string hashId)
+        public async Task<bool> Delete(DeleteStoryModel model)
         {
-            var ids = new Hashids(minHashLength: 5);
-            var storyId = ids.Decode(hashId).First();
-
-            if (storyId == 0)
-                return false;
-
             var story = await StoriesDbContext.Stories.Include(s => s.Comments)
-                                                      .Where(s => s.Id == storyId)
+                                                      .Where(s => s.Id == model.StoryId)
                                                       .FirstOrDefaultAsync();
-
-            if (story == null)
-                return false;
 
             foreach (var comment in story.Comments)
             {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Stories.Models.Story
+namespace Stories.Models.Stories
 {
     public class CreateStoryModel
     {

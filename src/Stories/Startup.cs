@@ -154,6 +154,7 @@ namespace Stories
             container.Register<IVoteQueueService, VoteQueueService>(Lifestyle.Scoped);
             container.Register<IBanService, BanService>(Lifestyle.Scoped);
             container.Register<IUserRules, UserRules>(Lifestyle.Scoped);
+            container.Register<IStoryRules, StoryRules>(Lifestyle.Scoped);
 
             var AmpqOptions = Configuration.GetSection("AMQPOptions").Get<AMQPOptions>();
             container.Register<IRabbitMQConnectionProvider>(() => new RabbitMQConnectionProvider(AmpqOptions), Lifestyle.Scoped);
