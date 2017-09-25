@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Stories.Models.Votes;
 using System.Threading.Tasks;
 
 namespace Stories.Services
 {
     public interface IVoteService
     {
-        Task<bool> ToggleStoryVote(string hashId, Guid userId);
-        Task<bool> ToggleCommentVote(string hashId, Guid userId);
+        Task<bool> ToggleStoryVote(ToggleVoteModel model);
+        Task<bool> ToggleCommentVote(ToggleVoteModel model);
     }
 }

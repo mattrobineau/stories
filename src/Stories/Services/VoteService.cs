@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Stories.Data.DbContexts;
 using Stories.Data.Entities;
-using System;
+using Stories.Models.Votes;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,9 +19,9 @@ namespace Stories.Services
             VoteQueueService = voteQueueService;
         }
 
-        public async Task<bool> ToggleStoryVote(string hashId, Guid userId)
+        public async Task<bool> ToggleStoryVote(ToggleVoteModel model)
         {
-            var storyId = new Hashids(minHashLength: 5).Decode(hashId)?.FirstOrDefault();
+            var storyId = new Hashids(minHashLength: 5).Decode(model.HashId)?.FirstOrDefault();
 
             if (storyId == 0)
                 return false;
@@ -31,7 +31,7 @@ namespace Stories.Services
             if(story == null)
                 return false;
                         
-            var vote = story.Votes.FirstOrDefault(vo => vo.UserId == userId);
+            var vote = story.Votes.FirstOrDefault(vo => vo.UserId == model.UserId);
 
             if (vote != null)
             {
@@ -43,7 +43,7 @@ namespace Stories.Services
             vote = new Vote
             {
                 StoryId = storyId,
-                UserId = userId,
+                UserId = model.UserId,
             };
 
             story.Upvotes++;
@@ -53,9 +53,9 @@ namespace Stories.Services
             return await AddVote(vote) > 0;
         }
 
-        public async Task<bool> ToggleCommentVote(string hashId, Guid userId)
+        public async Task<bool> ToggleCommentVote(ToggleVoteModel model)
         {
-            var commentId = new Hashids(minHashLength: 5).Decode(hashId)?.FirstOrDefault();
+            var commentId = new Hashids(minHashLength: 5).Decode(model.HashId)?.FirstOrDefault();
 
             if (commentId == 0)
                 return false;
@@ -65,7 +65,7 @@ namespace Stories.Services
             if (comment == null)
                 return false;
 
-            var vote = comment.Votes.FirstOrDefault(v => v.UserId == userId);
+            var vote = comment.Votes.FirstOrDefault(v => v.UserId == model.UserId);
 
             if (vote != null)
             {
@@ -76,7 +76,7 @@ namespace Stories.Services
             vote = new Vote
             {
                 CommentId = commentId,
-                UserId = userId,
+                UserId = model.UserId,
             };
 
             comment.Upvotes++;

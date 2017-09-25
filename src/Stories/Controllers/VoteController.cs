@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stories.Models.Votes;
 using Stories.Services;
+using Stories.Validation.Validators;
 using System;
 using System.Threading.Tasks;
 
@@ -9,10 +11,12 @@ namespace Stories.Controllers
     public class VoteController : BaseController
     {
         private readonly IVoteService VoteService;
+        private readonly IValidator<ToggleVoteModel> ToggleVoteModelValidator;
 
-        public VoteController(IVoteService voteService)
+        public VoteController(IVoteService voteService, IValidator<ToggleVoteModel> toggleVoteModelValidator)
         {
             VoteService = voteService;
+            ToggleVoteModelValidator = toggleVoteModelValidator;
         }
 
         [Authorize(Roles = "User")]
@@ -23,7 +27,15 @@ namespace Stories.Controllers
                 return Json(new { Status = false, Message = "Error upvoting." });
             }
 
-            if (await VoteService.ToggleStoryVote(hashId, userId))
+            var toggleVoteModel = new ToggleVoteModel { HashId = hashId, UserId = userId };
+            var validationResult = ToggleVoteModelValidator.Validate(toggleVoteModel);
+
+            if(!validationResult.IsValid)
+            {
+                return Json(new { status = false, messages = validationResult.Messages });
+            }
+
+            if (await VoteService.ToggleStoryVote(toggleVoteModel))
                 return Json(new { Status = true });
 
             return Json(new { Status = false });
@@ -37,7 +49,15 @@ namespace Stories.Controllers
                 return Json(new { Status = false, Message = "Error upvoting." });
             }
 
-            if (await VoteService.ToggleCommentVote(hashId, userId))
+            var toggleVoteModel = new ToggleVoteModel { HashId = hashId, UserId = userId };
+            var validationResult = ToggleVoteModelValidator.Validate(toggleVoteModel);
+
+            if (!validationResult.IsValid)
+            {
+                return Json(new { status = false, messages = validationResult.Messages });
+            }
+
+            if (await VoteService.ToggleCommentVote(toggleVoteModel))
                 return Json(new { Status = true });
 
             return Json(new { Status = false });

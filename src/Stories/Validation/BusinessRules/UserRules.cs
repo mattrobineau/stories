@@ -18,9 +18,14 @@ namespace Stories.Validation.BusinessRules
             return DbContext.Users.Any(u => u.Id == userId);
         }
 
-        public bool UserBanPreventsLogin(string email)
+        public bool ActionPreventedByUserBan(string email)
         {
             return DbContext.UserBans.Any(u => u.User.Email == email);
+        }
+
+        public bool ActionPreventedByUserBan(Guid userId)
+        {
+            return DbContext.UserBans.Any(u => u.UserId == userId);
         }
     }
 }

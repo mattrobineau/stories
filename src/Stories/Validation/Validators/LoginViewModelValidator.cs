@@ -29,7 +29,7 @@ namespace Stories.Validation.Validators
                 result.Messages.Add("Invalid email address.");
             }
 
-            if(UserRules.UserBanPreventsLogin(instance.Email))
+            if(UserRules.ActionPreventedByUserBan(instance.Email))
             {
                 result.IsValid = false;
                 result.Messages.Add("This account has been banned.");

@@ -63,7 +63,7 @@ namespace Stories.Services
             var storyId = ids.Decode(hashId).First();
 
             var story = await StoriesDbContext.Stories.Include(s => s.User)
-                                                      .Include(s => s.Comments)                                                      
+                                                      .Include(s => s.Comments)
                                                       .SingleOrDefaultAsync(s => s.Id == storyId);
 
             if (story == null)
@@ -128,21 +128,19 @@ namespace Stories.Services
         }
 
         private StorySummaryViewModel MapToStorySummaryViewModel(Story story, string hashId, Guid? userId, bool userUpvoted)
-        {            
+        {
             UriBuilder uri = null;
 
             if (string.IsNullOrEmpty(story.Url))
-            {                
+            {
                 var url = $"https://www.dotnetsignals.com/story?hashId={hashId}";
-                uri = new UriBuilder(url);
-                uri.Port = 443;
-
+                uri = new UriBuilder(url) { Port = 443 };
             }
             else
             {
                 uri = new UriBuilder(story.Url);
             }
-            
+
             var sanitizer = new HtmlSanitizer();
 
             return new StorySummaryViewModel()
@@ -155,7 +153,7 @@ namespace Stories.Services
                 Url = uri.ToString(),
                 Hostname = uri.Host,
                 Upvotes = story.Upvotes,
-                SubmitterUsername = story.User.Username,
+                SubmitterUsername = story.User.IsBanned ? "[banned]" : story.User.Username,
                 Slug = story.Title.ToSlug(),
                 IsAuthor = story.UserIsAuthor,
                 UserUpvoted = userUpvoted,
@@ -180,7 +178,7 @@ namespace Stories.Services
             model.Content = sanitizer.Sanitize(comment.Content);
             model.StoryHashId = hashIds.Encode(comment.Story.Id);
             model.SubmittedDate = comment.CreatedDate.ToString("o");
-            model.Username = comment.User.Username;
+            model.Username = comment.User.IsBanned ? "[banned]" : comment.User.Username;
             model.Upvotes = comment.Upvotes;
             model.UserUpvoted = upvotedComments.Any(id => id == comment.Id);
 
