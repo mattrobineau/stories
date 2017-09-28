@@ -1,4 +1,4 @@
-﻿using Stories.Models.Story;
+﻿using Stories.Models.Stories;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

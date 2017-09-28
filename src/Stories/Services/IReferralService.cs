@@ -7,7 +7,8 @@ namespace Stories.Services
 {
     public interface IReferralService
     {
-        Task<bool> SendInvite(InviteModel model);
         Task<ReferralModel> Get(Guid code);
+        Task<int> GetRemainingInvites(Guid userId);
+        Task<bool> SendInvite(InviteModel model);
     }
 }

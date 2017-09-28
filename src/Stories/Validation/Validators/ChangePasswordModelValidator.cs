@@ -2,7 +2,7 @@
 using Stories.Data.DbContexts;
 using Stories.Models.Users;
 using Stories.Services;
-using Stories.Validation.Validators;
+using Stories.Validation.BusinessRules;
 using System.Linq;
 
 namespace Stories.Validation.Validators
@@ -11,17 +11,40 @@ namespace Stories.Validation.Validators
     {
         private readonly IDbContext StoriesDbContext;
         private readonly IPasswordService PasswordService;
+        private readonly IUserRules UserRules;
 
-        public ChangePasswordModelValidator(IDbContext storiesDbContext, IPasswordService passwordService)
+        public ChangePasswordModelValidator(IDbContext storiesDbContext, IPasswordService passwordService, IUserRules userRules)
         {
             StoriesDbContext = storiesDbContext;
             PasswordService = passwordService;
+            UserRules = userRules;
         }
 
         public ValidationResult Validate(ChangePasswordModel instance)
         {
             var result = new ValidationResult { IsValid = false };
 
+            if(!UserRules.UserExists(instance.UserId))
+            {
+                result.IsValid = false;
+                result.Messages.Add("User does not exist.");
+                return result;
+            }
+
+            if(string.IsNullOrEmpty(instance.NewPassword))
+            {
+                result.IsValid = false;
+                result.Messages.Add("New password cannot be empty.");
+                return result;
+            }
+
+            if(string.IsNullOrEmpty(instance.OldPassword))
+            {
+                result.IsValid = false;
+                result.Messages.Add("Current password cannot be empty.");
+                return result;
+            }
+                        
             if (instance.ConfirmNewPassword != instance.NewPassword)
             {
                 result.IsValid = false;

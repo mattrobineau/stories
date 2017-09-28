@@ -11,6 +11,7 @@ namespace Stories.Validation.Validators
         public LoginViewModelValidator(IEmailRule emailBusinessRule, IUserRules userRules)
         {
             EmailBusinessRule = emailBusinessRule;
+            UserRules = userRules;
         }
 
         public ValidationResult Validate(LoginViewModel instance)
@@ -23,7 +24,7 @@ namespace Stories.Validation.Validators
                 result.Messages.Add("Password field cannot be empty.");
             }
 
-            if (!EmailBusinessRule.Validate(instance.Email))
+            if (string.IsNullOrEmpty(instance.Email) || !EmailBusinessRule.Validate(instance.Email))
             {
                 result.IsValid = false;
                 result.Messages.Add("Invalid email address.");

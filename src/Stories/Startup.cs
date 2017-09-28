@@ -163,6 +163,8 @@ namespace Stories
             MailgunOptions mailgunOptions = Configuration.GetSection("Mailgun").Get<MailgunOptions>();
             container.Register<IMailService>(() => new MailgunEmailService(mailgunOptions));
 
+            container.Register(() => Configuration.GetSection("Invites").Get<InviteOptions>(), Lifestyle.Scoped);
+
             container.RegisterConditional(typeof(Logging.ILogger), ctx => typeof(Logging.NLogAdaptor<>).MakeGenericType(ctx.Consumer.ImplementationType), Lifestyle.Singleton, context => true);
         }
     }

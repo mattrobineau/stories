@@ -98,7 +98,7 @@ namespace Stories.Controllers
             });
 
             if (userModel == null)
-                return Json(new { Status = false });
+                return Json(new { Status = false, Messages = new string[] { "Error creating user." } });
 
             return Json(new { Status = true });
         }

@@ -49,7 +49,7 @@ namespace Stories.Controllers
             Guid userId;
             if (!Guid.TryParse(CurrentUser.NameIdentifier, out userId))
             {
-                return Json(new { Status = false, Message = "Error adding comment." });
+                return Json(new { Status = false, Messages = new string[] { "Error adding comment." } });
             }
             
             model.UserId = userId;
@@ -65,7 +65,7 @@ namespace Stories.Controllers
         {            
             if(!Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId))
             {
-                return Json(new { Status = false, Message = "Error deleting comment." });
+                return Json(new { Status = false, Messages = new string[] { "Error deleting comment." } });
             }
 
             model.UserId = userId;
@@ -87,7 +87,7 @@ namespace Stories.Controllers
         {
             if(!Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId))
             {
-                return Json(new { Status = false, Message = "Error updating comment." });
+                return Json(new { Status = false, Messages = new string[] { "Error updating comment." } });
             }
 
             model.UserId = userId;

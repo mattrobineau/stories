@@ -1,11 +1,11 @@
-﻿@{
+﻿@model Stories.Models.ViewModels.User.InviteViewModel
     <section>
         <div id="invite-user" data-url="@Url.Action("invite", "user")">
             <div class="form-horizontal">
                 <div class="form-group">
-                    <label for="email" class="col-sm-2 control-label">Email</label>
+                    <label for="email" class="col-sm-2 control-label">Email (@Model.RemainingInvites)</label>
                     <div class="col-sm-3">
-                        <input type="email" class="form-control email" id="email">
+                        <input type="email" class="form-control email" id="email" value="@Model.Email">
                     </div>
                     <div class="col-sm-1">
                         <div id="success" class="control-label hidden">Sent <i class="fa fa-check" aria-hidden="true"></i></div>
@@ -21,4 +21,4 @@
             </div>
         </div>
     </section>
-}
+

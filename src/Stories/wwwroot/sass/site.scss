@@ -21,7 +21,7 @@ $dark-yellow: #BB8A00;
 $darkest-yellow: #8B6700;
 
 $text-color: #333;
-
+$error-red: #FFCCCC;
 /// Fonts
 $font: 'Open Sans', sans-serif;
 
@@ -254,4 +254,10 @@ ol {
 h2.underline {
     border-bottom: $light-blue solid;
     margin-bottom: 20px;
+}
+
+div#error {
+    background: #FFCCCC;
+    color: #000;
+    padding: 12px;
 }

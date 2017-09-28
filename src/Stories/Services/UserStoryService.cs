@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Stories.Data.DbContexts;
-using Stories.Models.Story;
+using Stories.Models.Stories;
 using System;
 using System.Collections.Generic;
 using System.Linq;

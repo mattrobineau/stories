@@ -20,7 +20,7 @@
 
             createUser(data).done(function (data) {
                 if (data.status === false) {
-                    showErrors(data.Messages);
+                    showErrors(data.messages);
                     return false;
                 }
                 else {
@@ -60,7 +60,7 @@
             dataType: "json",
             data: data
         });
-    }
+    };
 
     function banUser(data) {
         return $.ajax({
@@ -69,16 +69,16 @@
             dataType: "json",
             data: data
         });
-    }
+    };
 
     function showErrors(messages) {
         var $errorDiv = $("div#error");
+        $errorDiv.find(".error").remove();
 
         if (!messages || messages.length <= 0) {
             if (!$errorDiv.hasClass("hidden"))
                 $errorDiv.addClass("hidden");
 
-            $errorDiv.find(".error").remove();
             return;
         }
 
@@ -88,5 +88,5 @@
         for (var i = 0; i < messages.length; i++) {
             $errorDiv.append($("<div></div>").addClass("error").append($("<span></span>").text(messages[i])));
         }
-    }
+    };
 }(window.jQuery, window, document));

@@ -24,7 +24,7 @@ namespace Stories.Controllers
         {
             if (!Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId))
             {
-                return Json(new { Status = false, Message = "Error upvoting." });
+                return Json(new { Status = false, Messages = new string[] { "Error upvoting." } });
             }
 
             var toggleVoteModel = new ToggleVoteModel { HashId = hashId, UserId = userId };
@@ -38,7 +38,7 @@ namespace Stories.Controllers
             if (await VoteService.ToggleStoryVote(toggleVoteModel))
                 return Json(new { Status = true });
 
-            return Json(new { Status = false });
+            return Json(new { Status = false, messages = new string[] { "Unknown error occurred." } });
         }
 
         [Authorize(Roles = "User")]
@@ -46,7 +46,7 @@ namespace Stories.Controllers
         {
             if (!Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId))
             {
-                return Json(new { Status = false, Message = "Error upvoting." });
+                return Json(new { Status = false, Messages = new string[] { "Error upvoting." } });
             }
 
             var toggleVoteModel = new ToggleVoteModel { HashId = hashId, UserId = userId };
@@ -60,7 +60,7 @@ namespace Stories.Controllers
             if (await VoteService.ToggleCommentVote(toggleVoteModel))
                 return Json(new { Status = true });
 
-            return Json(new { Status = false });
+            return Json(new { Status = false, messages = new string[] { "Unkown error occurred." } });
         }
     }
 }

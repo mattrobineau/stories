@@ -41,7 +41,7 @@ namespace Stories.Controllers
                 var errors = ModelState.Values.SelectMany(v => v.Errors)
                                               .Select(e => e.ErrorMessage);
 
-                return Json(new { Status = false, Message = string.Join("\n", errors) });
+                return Json(new { Status = false, Messages = errors });
             }
 
             var validationResult = SignupValidator.Validate(model);
@@ -91,7 +91,7 @@ namespace Stories.Controllers
                 var errors = ModelState.Values.SelectMany(v => v.Errors)
                                               .Select(e => e.ErrorMessage);
 
-                return Json(new { Status = false, Message = string.Join("\n", errors) });
+                return Json(new { Status = false, Messages = errors });
             }
 
             if (!validationResult.IsValid)
@@ -105,7 +105,7 @@ namespace Stories.Controllers
 
             if (status == false)
             {
-                return Json(new { Message = "Invalid email or password", Status = status });
+                return Json(new { Status = status, Messages = new string[] { "Invalid email or password" } });
             }
 
             return Json(new { Status = status });

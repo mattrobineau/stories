@@ -1,7 +1,10 @@
-﻿using Stories.Data.DbContexts;
+﻿using Stories.Configuration;
+using Stories.Data.DbContexts;
 using Stories.Models.Users;
+using Stories.Services;
 using Stories.Validation.BusinessRules;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Stories.Validation.Validators
 {
@@ -10,19 +13,23 @@ namespace Stories.Validation.Validators
         private readonly IDbContext DbContext;
         private readonly IEmailRule EmailRule;
         private readonly IUserRules UserRules;
+        private readonly InviteOptions Options;
+        private readonly IReferralService ReferralService;
 
-        public InviteModelValidator(IDbContext dbContext, IEmailRule emailRule, IUserRules userRules)
+        public InviteModelValidator(InviteOptions inviteOptions, IDbContext dbContext, IEmailRule emailRule, IUserRules userRules, IReferralService referralService)
         {
             DbContext = dbContext;
             EmailRule = emailRule;
             UserRules = userRules;
+            Options = inviteOptions;
+            ReferralService = referralService;
         }
 
         public ValidationResult Validate(InviteModel instance)
         {
             var result = new ValidationResult { IsValid = true };
 
-            if (!EmailRule.Validate(instance.Email))
+            if (string.IsNullOrEmpty(instance.Email) || !EmailRule.Validate(instance.Email))
             {
                 result.IsValid = false;
                 result.Messages.Add("Invalid email address.");
@@ -37,8 +44,9 @@ namespace Stories.Validation.Validators
 
             var referralCount = DbContext.Referrals.Where(r => r.ReferrerUserId == instance.ReferrerUserId).Count();
 
-            //TODO move limit to appsettings.json
-            if (referralCount >= 5)
+            var remainingInvites = Task.Run(async () => await ReferralService.GetRemainingInvites(instance.ReferrerUserId)).Result;
+
+            if (remainingInvites <= 0)
             {
                 result.IsValid = false;
                 result.Messages.Add("Maximum number of invites has already been reached.");

@@ -10,13 +10,12 @@
         $("#signin").on("click", "button.submit", function () {
             signin().done(function (data) {
                 if (data.status == false) {
-                    $("div#error").removeClass("hidden").append('<div class="error">' + data.message + '</div>');
+                    showErrors(data.messages);
+
                     return false;
                 }
                 else {
-                    if (!$("div#error").hasClass("hidden")) {
-                        $("div#error").addClass("hidden");
-                    }
+                    showErrors();
                 }
 
                 window.location.href = $.QueryString["returnUrl"];
@@ -27,13 +26,11 @@
         $("#signup").on("click", "button.signup", function () {
             signup().done(function (data) {
                 if (data.status == false) {
-                    $("div#error").removeClass("hidden").append('<div class="error">' + data.message + '</div>');
+                    showErrors(data.messages);
                     return false;
                 }
                 else {
-                    if (!$("div#error").hasClass("hidden")) {
-                        $("div#error").addClass("hidden");
-                    }
+                    showErrors();
                 }
 
                 window.location.href = $.QueryString["returnUrl"];
@@ -44,13 +41,11 @@
         $("#addstory").on("click", "button.submit", function () {
             addStory().done(function (data) {
                 if (data.status == false) {
-                    $("div#error").removeClass("hidden").append('<div class="error">' + data.message + '</div>');
+                    showErrors(data.messages);
                     return false;
                 }
                 else {
-                    if (!$("div#error").hasClass("hidden")) {
-                        $("div#error").addClass("hidden");
-                    }
+                    showErrors();
                 }
 
                 window.location.href = $.QueryString["returnUrl"];
@@ -62,8 +57,8 @@
             var $container = $(this).closest("#addstory");
 
             $container.find("input").each(function () { $(this).val(""); });
-            $container.find("textarea").each(function () { $(this).val("");})
-            $container.find("input:checked").each(function () { $(this).attr('checked', false);})
+            $container.find("textarea").each(function () { $(this).val(""); })
+            $container.find("input:checked").each(function () { $(this).attr('checked', false); })
         });
 
         $("#add-comment").on("click", "button.add-comment-btn", function () {
@@ -76,13 +71,11 @@
 
             addComment(data).success(function (data) {
                 if (data.status == false) {
-                    $("div#error").removeClass("hidden").append('<div class="error">' + data.message + '</div>');
+                    showErrors(data.messages);
                     return false;
                 }
                 else {
-                    if (!$("div#error").hasClass("hidden")) {
-                        $("div#error").addClass("hidden");
-                    }
+                    showErrors();
                 }
 
                 $.get($("#comments").data("get") + "/?hashId=" + data.commentHashId, function (data) {
@@ -107,13 +100,11 @@
 
             addComment(data).success(function (data) {
                 if (data.status == false) {
-                    $("div#error").removeClass("hidden").append('<div class="error">' + data.message + '</div>');
+                    showErrors(data.messages);
                     return false;
                 }
                 else {
-                    if (!$("div#error").hasClass("hidden")) {
-                        $("div#error").addClass("hidden");
-                    }
+                    showErrors();
                 }
 
                 $.get($("#comments").data("get") + "/?hashId=" + data.commentHashId, function (data) {
@@ -132,16 +123,15 @@
 
             invite($parent.data("url"), $parent.find(".email").val()).done(function (data) {
                 if (data.status == false) {
-                    $("div#error").removeClass("hidden").append('<div class="error">' + data.message + '</div>');
+                    showErrors(data.messages);
                     return false;
                 }
                 else {
-                    if (!$("div#error").hasClass("hidden")) {
-                        $("div#error").addClass("hidden");
-                    }
+                    showErrors();
 
                     $parent.find("#success").removeClass("hidden");
                     $parent.find(".email").val("");
+                    $parent.find("label[for=email]").text("Email (" + data.remaninginvites + ")");
                 }
             });
         });
@@ -159,47 +149,38 @@
 
             var url = $parent.data("url");
 
-            referral(url, data).done(function() {
+            referral(url, data).done(function () {
                 if (data.status == false) {
-                    var $errorDiv = $("div#error").removeClass("hidden");
-
-                    for (var i = 0; i < data.messages.length - 1; i++) {
-                        $errorDiv.append('<div class="error">' + data.messages[i] + '</div>'); 
-                    }
-                    
+                    showErrors(data.messages);
                     return false;
                 }
                 else {
-                    if (!$("div#error").hasClass("hidden")) {
-                        $("div#error").addClass("hidden");
-                    }
+                    showErrors();
 
                     window.location.href = "/";
                 }
             });
         });
 
-        $("#updatepassword").on('click', "button.submit", function() {
+        $("#updatepassword").on('click', "button.submit", function () {
             var $parent = $(this).parent().closest("#changepassword");
             var data = {
-                OldPassword: $parent.find("#OldPassword").val(), 
+                OldPassword: $parent.find("#OldPassword").val(),
                 NewPassword: $parent.find("#NewPassword").val(),
-                ConfirmNewPassword: $parent.find("#ConfirmNewPassword").val()                
+                ConfirmNewPassword: $parent.find("#ConfirmNewPassword").val()
             };
 
             changepassword(data).success(function (data) {
                 $parent.find("#OldPassword").val("");
                 $parent.find("#NewPassword").val("");
                 $parent.find("#ConfirmNewPassword").val("");
-                
+
                 if (data.status == false) {
-                    $("div#error").removeClass("hidden").append('<div class="error">' + data.message + '</div>');
+                    showErrors(data.messages);
                     return false;
                 }
                 else {
-                    if (!$("div#error").hasClass("hidden")) {
-                        $("div#error").addClass("hidden");
-                    }
+                    showErrors();
                 }
             });
         });
@@ -217,14 +198,13 @@
             }
 
             toggleVote($voteParent.data("url"), $parent.data("hashid")).done(function (data) {
-                if (data.status = false) {
-                    $("div#error").removeClass("hidden").append('<div class="error">' + data.message + '</div>');
+                if (data.status == false) {
+                    showErrors(data.messages);
                     return false;
                 }
                 else {
-                    if (!$("div#error").hasClass("hidden")) {
-                        $("div#error").addClass("hidden");
-                    }
+                    showErrors();
+
                     $this.toggleClass("active");
 
                     var $scoreElement = $voteParent.find(".score");
@@ -251,7 +231,7 @@
 
             div.append(textArea);
             $("#add-comment .btn-block").clone().appendTo(div);
-            
+
             $this.closest(".comment").append(div);
             return false;
         });
@@ -270,13 +250,11 @@
 
             deleteStory(data).success(function (data) {
                 if (data.status == false) {
-                    $("div#error").removeClass("hidden").append('<div class="error">' + data.message + '</div>');
+                    showErrors(data.messages);
                     return false;
                 }
                 else {
-                    if (!$("div#error").hasClass("hidden")) {
-                        $("div#error").addClass("hidden");
-                    }
+                    showErrors();
                 }
 
                 window.location.href = "/";
@@ -337,8 +315,7 @@
         });
     };
 
-    function deleteStory(data)
-    {
+    function deleteStory(data) {
         return $.ajax({
             url: data.url,
             type: "POST",
@@ -381,7 +358,26 @@
             dataType: "json",
             data: data
         });
-    }
+    };
+
+    function showErrors(messages) {
+        var $errorDiv = $("div#error");
+        $errorDiv.find(".error").remove();
+
+        if (!messages || messages.length <= 0) {
+            if (!$errorDiv.hasClass("hidden"))
+                $errorDiv.addClass("hidden");
+            
+            return;
+        }
+
+        if ($errorDiv.hasClass('hidden'))
+            $errorDiv.removeClass('hidden');
+
+        for (var i = 0; i < messages.length; i++) {
+            $errorDiv.append($("<div></div>").addClass("error").append($("<span></span>").text(messages[i])));
+        }
+    };
 
     $.QueryString = (function (a) {
         if (a == "") return {};

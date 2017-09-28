@@ -41,7 +41,6 @@ namespace Stories.Controllers
         [Authorize(Roles = Roles.User)]
         public async Task<IActionResult> Index()
         {
-
             Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId);
 
             var userModel = await UserService.GetUser(userId);
@@ -50,6 +49,7 @@ namespace Stories.Controllers
             {
                 ChangePasswordViewModel = new ChangePasswordViewModel(),
                 Username = userModel.Username,
+                InviteViewModel = new InviteViewModel { RemainingInvites = await ReferralService.GetRemainingInvites(userId) },
                 IsBanned = userModel.IsBanned,
                 BanReason = userModel.BanModel.Reason,
                 CreatedDate = userModel.CreatedDate.ToString("o")
@@ -58,7 +58,6 @@ namespace Stories.Controllers
             return View(model);
         }
 
-        [Route("user/{username}")]
         public async Task<IActionResult> ViewUser(string username)
         {
             var userModel = await UserService.GetUser(username);
@@ -85,11 +84,7 @@ namespace Stories.Controllers
         [Authorize(Roles = Roles.User)]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
-            Guid userId;
-            if (!Guid.TryParse(CurrentUser.NameIdentifier, out userId))
-            {
-                return Json(new { Status = false, Message = "Could not find user" });
-            }
+            Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId);
 
             var changePasswordModel = new ChangePasswordModel
             {
@@ -98,6 +93,13 @@ namespace Stories.Controllers
                 OldPassword = model.OldPassword,
                 UserId = userId
             };
+
+            var validationResult = ChangePasswordValidator.Validate(changePasswordModel);
+
+            if(!validationResult.IsValid)
+            {
+                return Json(new { status = false, messages = validationResult.Messages });
+            }
 
             var result = await AuthenticationService.ChangePassword(changePasswordModel);
 
@@ -140,12 +142,12 @@ namespace Stories.Controllers
                 return Json(new { Status = false, Messages = validationResult.Messages });
 
             if (!Guid.TryParse(model.Code, out Guid code))
-                return Json(new { Status = false, Messages = new List<string> { "Invalid referral code." } });
+                return Json(new { Status = false, Messages = new string[] { "Invalid referral code." } });
 
             var referral = ReferralService.Get(code);
 
             if (referral == null)
-                return Json(new { Status = false, Messages = new List<string> { "Invalid referral code." } });
+                return Json(new { Status = false, Messages = new string[] { "Invalid referral code." } });
 
             var userModel = await UserService.CreateUser(new CreateUserModel
             {
@@ -160,9 +162,13 @@ namespace Stories.Controllers
         }
 
         [Roles(Roles.User)]
-        public IActionResult Invite()
+        public async Task<IActionResult> Invite()
         {
-            return View();
+            Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId);
+
+            var model = new InviteViewModel { RemainingInvites = await ReferralService.GetRemainingInvites(userId) };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -181,7 +187,7 @@ namespace Stories.Controllers
             if (!await ReferralService.SendInvite(inviteModel))
                 return Json(new { Status = false, Messages = new string[] { "Error sending invite. Try again later." } });
 
-            return Json(new { Status = true });
+            return Json(new { Status = true, RemainingInvites = await ReferralService.GetRemainingInvites(userId) });
         }
     }
 }

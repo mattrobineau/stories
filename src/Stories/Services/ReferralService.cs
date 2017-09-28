@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Stories.Configuration;
 using Stories.Data.DbContexts;
 using Stories.Data.Entities;
 using Stories.Models;
@@ -13,18 +14,30 @@ namespace Stories.Services
 {
     public class ReferralService : IReferralService
     {
-        private readonly IDbContext StoriesDbContext;
+        private readonly IDbContext DbContext;
         private readonly IMailService MailService;
+        private readonly InviteOptions InviteOptions;
 
-        public ReferralService(IDbContext storiesDbContext, IMailService mailService)
+        public ReferralService(IDbContext storiesDbContext, IMailService mailService, InviteOptions inviteOptions)
         {
-            StoriesDbContext = storiesDbContext;
-            MailService = mailService;            
+            DbContext = storiesDbContext;
+            MailService = mailService;
+            InviteOptions = inviteOptions;
+        }
+
+        public async Task<int> GetRemainingInvites(Guid userId)
+        {
+            var referralCount = await DbContext.Referrals.Where(r => r.ReferrerUserId == userId).CountAsync();
+
+            if (referralCount > InviteOptions.MaxInvites)
+                return 0;
+
+            return InviteOptions.MaxInvites - referralCount;
         }
 
         public async Task<bool> SendInvite(InviteModel model)
         {
-            var referral = await StoriesDbContext.Referrals.AddAsync(new Referral()
+            var referral = await DbContext.Referrals.AddAsync(new Referral()
             {
                 Code = Guid.NewGuid(),
                 Email = model.Email,
@@ -32,7 +45,7 @@ namespace Stories.Services
                 ExpiryDate = DateTime.UtcNow.AddDays(7)
             });
 
-            var rowCount = await StoriesDbContext.SaveChangesAsync();
+            var rowCount = await DbContext.SaveChangesAsync();
 
             if (rowCount != 1)
                 return false;
@@ -54,7 +67,7 @@ namespace Stories.Services
 
         public async Task<ReferralModel> Get(Guid code)
         {
-            var model = await StoriesDbContext.Referrals.Where(r => r.Code == code)
+            var model = await DbContext.Referrals.Where(r => r.Code == code)
                                                         .Select(r => new ReferralModel {
                                                             Code = r.Code,
                                                             Email = r.Email,
