@@ -1,5 +1,5 @@
-﻿@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700');
-
+﻿@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700');
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300i,400,400i,700,700i');
 /// Colors http://paletton.com/#uid=73v0u0k++tfOEZA+VHs+Xnw+xhw
 // Blues
 $grey-blue: #9ec7e2;
@@ -23,21 +23,29 @@ $darkest-yellow: #8B6700;
 $text-color: #333;
 $error-red: #FFCCCC;
 /// Fonts
-$font: 'Open Sans', sans-serif;
+$font: 'Roboto Condensed', sans-serif;
+$font-emphasis: 'Open Sans', sans-serif;
+$font-light: 300;
+$font-normal: 400;
+$font-bold: 700;
+$font-ultra: 700;
 
 h1 {
     font-size: 2em;
-    font-weight: 700;
+    font-weight: $font-bold;
+    font-family: $font-emphasis;
 }
 
 h2 {
     font-size: 1.5em;
-    font-weight: 600;
+    font-weight: $font-bold;
+    font-family: $font-emphasis;
 }
 
 h3 {
     font-size: 1.17em;
-    font-weight: 600;
+    font-weight: $font-bold;
+    font-family: $font-emphasis;
     margin: 0;
 }
 
@@ -54,6 +62,7 @@ h6 {
 }
 
 .hostname {
+    font-weight:$font-light !important;
     font-style: italic;
     font-size: 12px;
     margin-left: 1em;
@@ -89,6 +98,12 @@ div.story h3 {
 div.vote, div.score {
     width: 48px;
     text-align: center;
+}
+
+div.score {
+    font-family: $font-emphasis;
+    font-weight: $font-normal;
+    font-size: 14px;
 }
 
 div.vote {
@@ -199,6 +214,7 @@ body {
     font-weight: 400;
     color: $text-color;
     padding: 48px 0;
+    padding-bottom:70px;
 }
 
 nav {
@@ -260,4 +276,13 @@ div#error {
     background: #FFCCCC;
     color: #000;
     padding: 12px;
+}
+
+.httperror {
+    font-family: $font;
+    font-size: 4.5em;
+    font-style: italic;
+    font-weight: bold;
+    color: $blue;
+    padding-top: 48px;
 }

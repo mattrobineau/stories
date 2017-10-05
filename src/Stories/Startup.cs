@@ -117,6 +117,8 @@ namespace Stories
 
             app.AddNLogWeb();
 
+            app.UseStatusCodePagesWithReExecute("/error/{0}");
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
