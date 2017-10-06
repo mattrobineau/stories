@@ -13,16 +13,17 @@ namespace Stories.Data.DbContexts
     public class StoriesDbContext : DbContext, IDbContext
     {
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<StoryScore> StoryScores { get; set; }
         public DbSet<CommentScore> CommentScores { get; set; }
-        public DbSet<Story> Stories { get; set; }    
-        public DbSet<UserSettings> UserSettings { get; set; }
-        public DbSet<Vote> Votes { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<Flag> Flags { get; set; }
         public DbSet<Referral> Referrals { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Story> Stories { get; set; }    
+        public DbSet<StoryScore> StoryScores { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<UserBan> UserBans { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<UserSettings> UserSettings { get; set; }
+        public DbSet<Vote> Votes { get; set; }
 
         public StoriesDbContext(DbContextOptions<StoriesDbContext> options)
             : base(options)

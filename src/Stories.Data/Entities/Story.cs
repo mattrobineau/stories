@@ -17,10 +17,11 @@ namespace Stories.Data.Entities
         public bool UserIsAuthor { get; set; }
         public string Url { get; set; }        
 
-        public virtual List<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual IList<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual IList<Flag> Flags { get; set; } = new List<Flag>();
         public virtual StoryScore Score { get; set; }
         public virtual User User { get; set; }
-        public virtual List<Vote> Votes { get; set; } = new List<Vote>();
+        public virtual IList<Vote> Votes { get; set; } = new List<Vote>();
 
         public virtual DateTime CreatedDate { get; set; }
         public virtual DateTime ModifiedDate { get; set; }

@@ -18,6 +18,7 @@ namespace Stories.Data.Entities
         public int? SettingsId { get; set; }
 
         public virtual IList<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual IList<Flag> Flags { get; set; } = new List<Flag>();
         public virtual IList<Story> Stories { get; set; } = new List<Story>();
         public virtual IList<UserRole> Roles { get; set; } = new List<UserRole>();
         public virtual IList<Vote> Votes { get; set; } = new List<Vote>();
