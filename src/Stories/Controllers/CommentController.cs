@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using HashidsNet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stories.Attributes;
 using Stories.Constants;
 using Stories.Models.Comment;
+using Stories.Models.Flags;
 using Stories.Models.ViewModels;
 using Stories.Services;
 using Stories.Validation.Validators;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Stories.Controllers
@@ -16,16 +20,22 @@ namespace Stories.Controllers
         private readonly IValidator<AddCommentViewModel> AddCommentViewModelValidator;
         private readonly IValidator<DeleteCommentModel> DeleteCommentModelValidator;
         private readonly IValidator<UpdateCommentModel> UpdateCommentModelValidator;
+        private readonly IValidator<ToggleFlagModel> ToggleFlagModelValidator;
+        private readonly IFlagService FlagService;
 
-        public CommentController(ICommentService commentService, 
+        public CommentController(ICommentService commentService,
+                                 IFlagService flagService,
                                  IValidator<AddCommentViewModel> addCommentViewModelValidator, 
                                  IValidator<DeleteCommentModel> deleteCommentModelValidator,
-                                 IValidator<UpdateCommentModel> updateCommentModelValidator)
+                                 IValidator<UpdateCommentModel> updateCommentModelValidator,
+                                 IValidator<ToggleFlagModel> toggleFlagModelValidator)
         {
             CommentService = commentService;
             AddCommentViewModelValidator = addCommentViewModelValidator;
             DeleteCommentModelValidator = deleteCommentModelValidator;
             UpdateCommentModelValidator = updateCommentModelValidator;
+            ToggleFlagModelValidator = toggleFlagModelValidator;
+            FlagService = flagService;
         }
 
         public async Task<IActionResult> Get(string hashId)
@@ -102,6 +112,33 @@ namespace Stories.Controllers
             var result = await CommentService.Update(model);
 
             return null;
+        }
+
+        [HttpPost]
+        [Roles(Roles.User)]
+        public async Task<IActionResult> Flag(string hashId)
+        {
+            var ids = new Hashids(minHashLength: 5);
+            var commentId = ids.Decode(hashId).First();
+
+            Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId);
+
+            var flagModel = new ToggleFlagModel
+            {
+                CommentId = commentId,
+                UserId = userId
+            };
+
+            var validationResult = ToggleFlagModelValidator.Validate(flagModel);
+
+            if (!validationResult.IsValid)
+            {
+                return Json(new { status = false, messages = validationResult.Messages });
+            }
+
+            var status = await FlagService.ToggleFlag(flagModel);
+
+            return Json(new { status = status });
         }
     }
 }

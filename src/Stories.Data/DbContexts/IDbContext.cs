@@ -10,6 +10,7 @@ namespace Stories.Data.DbContexts
     {        
         DbSet<Comment> Comments { get; set; }
         DbSet<CommentScore> CommentScores { get; set; }
+        DbSet<Flag> Flags { get; set; }
         DbSet<StoryScore> StoryScores { get; set; }
         DbSet<Story> Stories { get; set; }
         DbSet<User> Users { get; set; }

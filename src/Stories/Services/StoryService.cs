@@ -53,7 +53,7 @@ namespace Stories.Services
 
             VoteQueueService.QueueStoryVote(story.Entity.Id);
 
-            return MapToStorySummaryViewModel(story.Entity, hashIds.Encode(story.Entity.Id), model.UserId, false);
+            return MapToStorySummaryViewModel(story.Entity, hashIds.Encode(story.Entity.Id), model.UserId, false, false);
         }
 
         public async Task<StoryViewModel> Get(string hashId, Guid? userId)
@@ -68,18 +68,23 @@ namespace Stories.Services
                 return null;
 
             var userUpvoted = userId != null && await StoriesDbContext.Votes.AnyAsync(v => story.Id == v.StoryId && v.UserId == userId);
+            var userFlagged = userId != null && await StoriesDbContext.Flags.AnyAsync(f => f.UserId == userId && f.StoryId == story.Id);
 
             var model = new StoryViewModel
             {
-                Summary = MapToStorySummaryViewModel(story, hashId, userId, userUpvoted)
+                Summary = MapToStorySummaryViewModel(story, hashId, userId, userUpvoted, userFlagged)
             };
 
-            var upvotedComments = await StoriesDbContext.Votes.Where(v => v.CommentId != null && v.UserId == userId)
+            var upvotedComments = await StoriesDbContext.Votes.Where(v => v.CommentId != null && v.UserId == userId && v.Comment.StoryId == story.Id)
                                                               .Select(v => (int)v.CommentId)
                                                               .ToListAsync();
 
+            var flaggedComments = await StoriesDbContext.Flags.Where(f => f.CommentId != null && f.UserId == userId && f.Comment.StoryId == storyId)
+                                                              .Select(f => (int)f.CommentId)
+                                                              .ToListAsync();
+
             foreach (var comment in story.Comments.OrderByDescending(c => c.Score?.Value).Where(c => c.ParentCommentId == null))
-                model.Comments.Add(MapCommentToCommentViewModel(comment, upvotedComments));
+                model.Comments.Add(MapCommentToCommentViewModel(comment, upvotedComments, flaggedComments));
 
             return model;
         }
@@ -116,15 +121,16 @@ namespace Stories.Services
             foreach (var story in stories)
             {
                 var userUpvoted = upvotedStoryIds.Any(id => id == story.Id);
+                var userFlagged = userId != null && await StoriesDbContext.Flags.AnyAsync(f => f.UserId == userId && f.StoryId == story.Id);
                 var hashId = new Hashids(minHashLength: 5).Encode(story.Id);
 
-                model.Stories.Add(MapToStorySummaryViewModel(story, hashId, userId, userUpvoted));
+                model.Stories.Add(MapToStorySummaryViewModel(story, hashId, userId, userUpvoted, userFlagged));
             }
 
             return model;
         }
 
-        private StorySummaryViewModel MapToStorySummaryViewModel(Story story, string hashId, Guid? userId, bool userUpvoted)
+        private StorySummaryViewModel MapToStorySummaryViewModel(Story story, string hashId, Guid? userId, bool userUpvoted, bool userFlagged)
         {
             var user = StoriesDbContext.Users.Single(u => u.Id == userId);
 
@@ -157,17 +163,18 @@ namespace Stories.Services
                 IsAuthor = story.UserIsAuthor,
                 UserUpvoted = userUpvoted,
                 IsSubmitter = userId == story.UserId,
-                IsDeletable = DateTime.UtcNow < story.CreatedDate.AddMinutes(5)
+                IsDeletable = DateTime.UtcNow < story.CreatedDate.AddMinutes(5),
+                UserFlagged = userFlagged,
             };
         }
 
-        private CommentViewModel MapCommentToCommentViewModel(Comment comment, List<int> upvotedComments)
+        private CommentViewModel MapCommentToCommentViewModel(Comment comment, List<int> upvotedComments, List<int> flaggedComments)
         {
             var model = new CommentViewModel();
 
             foreach (var reply in comment.Replies.OrderByDescending(c => c?.Score?.Value))
             {
-                model.Replies.Add(MapCommentToCommentViewModel(reply, upvotedComments));
+                model.Replies.Add(MapCommentToCommentViewModel(reply, upvotedComments, flaggedComments));
             }
 
             var hashIds = new Hashids(minHashLength: 5);
@@ -180,6 +187,7 @@ namespace Stories.Services
             model.Username = comment.User.IsBanned ? "[banned]" : comment.User.Username;
             model.Upvotes = comment.Upvotes;
             model.UserUpvoted = upvotedComments.Any(id => id == comment.Id);
+            model.UserFlagged = flaggedComments.Any(id => id == comment.Id);
 
             return model;
         }

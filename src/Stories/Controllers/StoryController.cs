@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stories.Attributes;
 using Stories.Constants;
+using Stories.Models.Flags;
 using Stories.Models.Stories;
 using Stories.Models.StoryViewModels;
 using Stories.Models.ViewModels;
@@ -20,13 +21,22 @@ namespace Stories.Controllers
         private readonly IUserService UserService;
         private readonly IValidator<CreateStoryModel> CreateStoryModelValidator;
         private readonly IValidator<DeleteStoryModel> DeleteStoryModelValidator;
+        private readonly IFlagService FlagService;
+        private readonly IValidator<ToggleFlagModel> ToggleFlagModelValidator;
 
-        public StoryController(IStoryService storyService, IUserService userService, IValidator<CreateStoryModel> createStoryModelValidator, IValidator<DeleteStoryModel> deleteStoryModelValidator)
+        public StoryController(IStoryService storyService, 
+                               IUserService userService, 
+                               IFlagService flagService,
+                               IValidator<CreateStoryModel> createStoryModelValidator, 
+                               IValidator<DeleteStoryModel> deleteStoryModelValidator,
+                               IValidator<ToggleFlagModel> toggleFlagModelValidator)
         {
             StoryService = storyService;
             UserService = userService;
             CreateStoryModelValidator = createStoryModelValidator;
             DeleteStoryModelValidator = deleteStoryModelValidator;
+            FlagService = flagService;
+            ToggleFlagModelValidator = toggleFlagModelValidator;
         }
 
         public async Task<IActionResult> Index(string hashId)
@@ -106,6 +116,33 @@ namespace Stories.Controllers
             var status = await StoryService.Delete(deleteModel);
 
             return Json(new { Status = status });
+        }
+
+        [HttpPost]
+        [Roles(Roles.User)]
+        public async Task<IActionResult> Flag(string hashId)
+        {
+            var ids = new Hashids(minHashLength: 5);
+            var storyId = ids.Decode(hashId).First();
+
+            Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId);
+
+            var flagModel = new ToggleFlagModel
+            {
+                StoryId = storyId,
+                UserId = userId
+            };
+
+            var validationResult = ToggleFlagModelValidator.Validate(flagModel);
+
+            if(!validationResult.IsValid)
+            {
+                return Json(new { status = false, messages = validationResult.Messages });
+            }
+
+            var status = await FlagService.ToggleFlag(flagModel);
+
+            return Json(new { status = status });
         }
     }
 }

@@ -1,4 +1,10 @@
 ﻿@model Stories.Models.ViewModels.StoryViewModel
+
+@section scripts 
+{
+    <script src="~/js/comment.min.js" asp-append-version="true"></script>
+    <script src="~/js/story.min.js" asp-append-version="true"></script>
+}
 <section>
     @Html.DisplayFor(m => m.Summary)
 

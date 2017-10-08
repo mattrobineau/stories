@@ -20,6 +20,14 @@
                 <a href="#" class="reply"><i class="fa fa-reply" aria-hidden="true" title="reply to comment"></i></a>
                 <a href="#" class="quote"><i class="fa fa-quote-right" aria-hidden="true" title="quote comment"></i></a>
                 <a href="#" class="delete"><i class="fa fa-trash" aria-hidden="true" title="delete comment"></i></a>
+                @if (Model.UserFlagged)
+                {
+                    <i class="fa fa-flag active" aria-hidden="true" title="Remove flag" data-url="@Url.Action("Flag","Comment")"></i>
+                }
+                else
+                {
+                    <i class="fa fa-flag" aria-hidden="true" title="Flag comment" data-url="@Url.Action("Flag","Comment")"></i>
+                }
             </div>
         </div>
         <div class="comment-content">

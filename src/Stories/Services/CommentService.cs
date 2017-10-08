@@ -76,6 +76,9 @@ namespace Stories.Services
             var hashIds = new Hashids(minHashLength: 5);
             var username = await StoriesDbContext.Users.Where(u => u.Id == comment.UserId).Select(u => u.Username).FirstOrDefaultAsync();
 
+            var userUpvoted = await StoriesDbContext.Votes.Where(v => v.CommentId == comment.Id).AnyAsync();
+            var userFlagged = await StoriesDbContext.Flags.Where(f => f.CommentId == comment.Id).AnyAsync();
+
             return new CommentViewModel
             {
                 Content = comment.IsDeleted ? "<deleted>" : comment.Content,
@@ -84,7 +87,9 @@ namespace Stories.Services
                 SubmittedDate = comment.CreatedDate.ToString("o"),
                 Username = username,
                 Upvotes = comment.Upvotes,
-                IsEdited = comment.IsEdited
+                IsEdited = comment.IsEdited,
+                UserFlagged = userFlagged,
+                UserUpvoted = userUpvoted
             };
         }
     }

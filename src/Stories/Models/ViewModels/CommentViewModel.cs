@@ -18,5 +18,6 @@ namespace Stories.Models.ViewModels
         public int Upvotes { get; set; }
         public string Username { get; set; }
         public bool UserUpvoted { get; set; }
+        public bool UserFlagged { get; set; }
     }
 }

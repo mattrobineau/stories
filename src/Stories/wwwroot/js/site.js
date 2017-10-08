@@ -38,85 +38,6 @@
             });
         });
 
-        $("#addstory").on("click", "button.submit", function () {
-            addStory().done(function (data) {
-                if (data.status == false) {
-                    showErrors(data.messages);
-                    return false;
-                }
-                else {
-                    showErrors();
-                }
-
-                window.location.href = $.QueryString["returnUrl"];
-            });
-            return false;
-        });
-
-        $("#addstory").on("click", "button.reset", function () {
-            var $container = $(this).closest("#addstory");
-
-            $container.find("input").each(function () { $(this).val(""); });
-            $container.find("textarea").each(function () { $(this).val(""); })
-            $container.find("input:checked").each(function () { $(this).attr('checked', false); })
-        });
-
-        $("#add-comment").on("click", "button.add-comment-btn", function () {
-            var $this = $(this);
-            var $textarea = $this.parent().closest("#add-comment").find("textarea.add-comment");
-            var data = {
-                StoryHashId: $(".story").data("hashid"),
-                CommentMarkdown: $textarea.val(),
-            };
-
-            addComment(data).success(function (data) {
-                if (data.status == false) {
-                    showErrors(data.messages);
-                    return false;
-                }
-                else {
-                    showErrors();
-                }
-
-                $.get($("#comments").data("get") + "/?hashId=" + data.commentHashId, function (data) {
-                    $(data).prependTo("#comments");
-                });
-
-                $textarea.val("");
-
-                return false;
-            });
-        });
-
-        $("#comments").on("click", "button.add-comment-btn", function () {
-            var $parent = $(this).parent().closest(".comment");
-            var $textarea = $parent.find("textarea.add-comment");
-
-            var data = {
-                ParentCommentHashId: $parent.data("hashid"),
-                StoryHashId: $(".story").data("hashid"),
-                CommentMarkdown: $textarea.val(),
-            };
-
-            addComment(data).success(function (data) {
-                if (data.status == false) {
-                    showErrors(data.messages);
-                    return false;
-                }
-                else {
-                    showErrors();
-                }
-
-                $.get($("#comments").data("get") + "/?hashId=" + data.commentHashId, function (data) {
-                    $parent.after($("<ol><li></li></ol>").append(data).addClass("reply"));
-                });
-
-                $parent.find(".comment-reply").remove();
-
-                return false;
-            });
-        });
-
         $("#invite-user").on("click", "button.submit", function () {
             var $parent = $(this).closest("#invite-user");
             $parent.find("sucess").addClass("hidden");
@@ -221,46 +142,6 @@
                 return false;
             });
         });
-
-        $("div#comments").on("click", "a.reply", function () {
-            var $this = $(this);
-
-            var url = $("#add-comment").data("url");
-            var div = $("<div></div>").addClass("comment-reply");
-            var textArea = $("<textarea></textarea>").addClass("form-control add-comment").attr("rows", 5);
-
-            div.append(textArea);
-            $("#add-comment .btn-block").clone().appendTo(div);
-
-            $this.closest(".comment").append(div);
-            return false;
-        });
-
-        $("div.story").on("click", "i.fa-trash", function () {
-            var $this = $(this);
-            var url = $(this).closest("div.delete-story").data("url");
-            var hashId = $(this).closest("div.story").data("hashid");
-
-            var data = {
-                url: url,
-                form: {
-                    hashId: hashId
-                }
-            };
-
-            deleteStory(data).success(function (data) {
-                if (data.status == false) {
-                    showErrors(data.messages);
-                    return false;
-                }
-                else {
-                    showErrors();
-                }
-
-                window.location.href = "/";
-                return false;
-            });
-        });
     });
 
     function signin() {
@@ -287,40 +168,6 @@
             type: 'POST',
             dateType: "json",
             data: data
-        });
-    };
-
-    function addStory() {
-        var data = {
-            Title: $("#addstory .title").val(),
-            Url: $("#addstory .url").val(),
-            DescriptionMarkdown: $("#addstory .description").val(),
-            IsAuthor: $("#addstory .isauthor").val()
-        };
-
-        return $.ajax({
-            url: $("#addstory").data("url"),
-            type: 'POST',
-            dataType: "json",
-            data: data
-        });
-    };
-
-    function addComment(data) {
-        return $.ajax({
-            url: $("#add-comment").data("url"),
-            type: "POST",
-            dataType: "json",
-            data: data
-        });
-    };
-
-    function deleteStory(data) {
-        return $.ajax({
-            url: data.url,
-            type: "POST",
-            dataType: "json",
-            data: data.form
         });
     };
 
