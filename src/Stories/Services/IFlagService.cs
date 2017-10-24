@@ -5,6 +5,6 @@ namespace Stories.Services
 {
     public interface IFlagService
     {
-        Task<bool> ToggleFlag(ToggleFlagModel model)
+        Task<bool> ToggleFlag(ToggleFlagModel model);
     }
 }

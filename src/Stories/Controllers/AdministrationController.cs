@@ -153,7 +153,7 @@ namespace Stories.Controllers
                 return Json(new { Status = true });
             }
 
-            return Json(new { Status = false, Messages = new string[] { "Unknown error occured" } });
+            return Json(new { Status = false, Messages = new string[] { "No updates made. Either the there were no changes to a user's ban, or there was an error." } });
         }
     }
 }

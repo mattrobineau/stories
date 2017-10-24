@@ -1,4 +1,6 @@
-﻿(function ($, window, document) {
+﻿;(function ($, window, document) {
+    "use strict";
+
     $(function () {
         // The DOM is ready!
         $("#create-user").on('click', "div.actions button.submit", function () {
@@ -25,6 +27,10 @@
                 }
                 else {
                     showErrors();
+                    $parent.find("input.username").val("");
+                    $parent.find("input.email").val("");
+                    $parent.find("input.password").val("");
+                    $parent.find("input.confirmPassword").val("");
                 }
             });
 

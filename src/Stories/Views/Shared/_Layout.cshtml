@@ -21,7 +21,7 @@
 </head>
 <body>
     <div class="header">
-        @if (User.IsInRole(Roles.Admin))
+        @if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Moderator))
         {
             <div class="container nopadding">
                 <a class="admin-link" href="@Url.Action("Index", "Administration")">Admin</a>

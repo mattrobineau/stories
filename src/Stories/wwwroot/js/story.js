@@ -1,8 +1,10 @@
-﻿(function ($, window, document) {
+﻿;(function ($, window, document) {
+    "use strict";
+
     $(function () {
         $("#addstory").on("click", "button.submit", function () {
             addStory().done(function (data) {
-                if (data.status == false) {
+                if (data.status === false) {
                     showErrors(data.messages);
                     return false;
                 }
@@ -10,7 +12,7 @@
                     showErrors();
                 }
 
-                window.location.href = $.QueryString["returnUrl"];
+                window.location.href = $.QueryString.returnUrl;
             });
             return false;
         });
@@ -19,8 +21,8 @@
             var $container = $(this).closest("#addstory");
 
             $container.find("input").each(function () { $(this).val(""); });
-            $container.find("textarea").each(function () { $(this).val(""); })
-            $container.find("input:checked").each(function () { $(this).attr('checked', false); })
+            $container.find("textarea").each(function () { $(this).val(""); });
+            $container.find("input:checked").each(function () { $(this).attr('checked', false); });
         });
 
         $("div.story").on("click", "i.fa-trash", function () {
@@ -36,7 +38,7 @@
             };
 
             deleteStory(data).success(function (data) {
-                if (data.status == false) {
+                if (data.status === false) {
                     showErrors(data.messages);
                     return false;
                 }
@@ -62,7 +64,7 @@
             };
 
             flagStory(data).success(function (data) {
-                if (data.status == false) {
+                if (data.status === false) {
                     showErrors(data.messages);
                     return false;
                 }
@@ -89,7 +91,7 @@
             dataType: "json",
             data: data
         });
-    };
+    }
 
     function deleteStory(data) {
         return $.ajax({
@@ -98,16 +100,16 @@
             dataType: "json",
             data: data.form
         });
-    };
+    }
 
     function flagStory(data) {
         return $.ajax({
             url: data.url,
             type: "POST",
             dataType: "json",
-            data = data.body
+            data: data.body
         });
-    };
+    }
 
     function showErrors(messages) {
         var $errorDiv = $("div#error");
@@ -126,5 +128,5 @@
         for (var i = 0; i < messages.length; i++) {
             $errorDiv.append($("<div></div>").addClass("error").append($("<span></span>").text(messages[i])));
         }
-    };
+    }
 }(window.jQuery, window, document));

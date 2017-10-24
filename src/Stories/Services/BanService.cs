@@ -29,13 +29,12 @@ namespace Stories.Services
             UserBan userBan = await GetUserBan(user.Id);
 
             if (userBan == null)
-                userBan = new UserBan();
+                userBan = new UserBan() { UserId = model.UserId };
 
             userBan.BannedByUserId = model.BannedByUserId;
             userBan.ExpiryDate = model.ExpiryDate;            
             userBan.Notes = model.Notes;
             userBan.Reason = model.Reason;
-            userBan.UserId = model.UserId;
 
             if (userBan.Id == 0)
                 await DbContext.UserBans.AddAsync(userBan);

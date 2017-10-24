@@ -1,4 +1,6 @@
-﻿(function ($, window, document) {
+﻿; (function ($, window, document) {
+    "use strict";
+
     $(function () {
         // The DOM is ready!
         $(document).keypress(function (e) {

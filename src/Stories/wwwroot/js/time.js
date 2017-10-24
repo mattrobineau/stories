@@ -1,4 +1,6 @@
 ﻿(function ($, window, document) {
+    "use strict";
+
     $(function () {
         $('time').text(function () {
             var $this = $(this);

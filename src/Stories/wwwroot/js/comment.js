@@ -1,4 +1,6 @@
-﻿(function ($, window, document) {
+﻿; (function ($, window, document) {
+    "use strict";
+
     $(function () {
         $("#add-comment").on("click", "button.add-comment-btn", function () {
             var $this = $(this);
@@ -9,7 +11,7 @@
             };
 
             addComment(data).success(function (data) {
-                if (data.status == false) {
+                if (data.status === false) {
                     showErrors(data.messages);
                     return false;
                 }
@@ -38,7 +40,7 @@
             };
 
             addComment(data).success(function (data) {
-                if (data.status == false) {
+                if (data.status === false) {
                     showErrors(data.messages);
                     return false;
                 }
@@ -59,7 +61,7 @@
         $("div#comments").on("click", "a.reply", function () {
             var $this = $(this);
 
-            var url = $("#add-comment").data("url");
+            var url = $("#add-comment").data("url"); // Not using this variable? why?
             var div = $("<div></div>").addClass("comment-reply");
             var textArea = $("<textarea></textarea>").addClass("form-control add-comment").attr("rows", 5);
 
@@ -83,7 +85,7 @@
             };
 
             flagStory(data).success(function (data) {
-                if (data.status == false) {
+                if (data.status === false) {
                     showErrors(data.messages);
                     return false;
                 }
@@ -103,7 +105,7 @@
             dataType: "json",
             data: data
         });
-    };
+    }
 
     function showErrors(messages) {
         var $errorDiv = $("div#error");
@@ -122,14 +124,14 @@
         for (var i = 0; i < messages.length; i++) {
             $errorDiv.append($("<div></div>").addClass("error").append($("<span></span>").text(messages[i])));
         }
-    };
+    }
 
     function flagStory(data) {
         return $.ajax({
             url: data.url,
             type: "POST",
             dataType: "json",
-            data = data.body
+            data: data.body
         });
-    };
+    }
 }(window.jQuery, window, document));
