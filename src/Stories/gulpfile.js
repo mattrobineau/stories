@@ -11,7 +11,7 @@ var config = {
     //Include all js files but exclude any min.js files
     jsSrc: ['./wwwroot/js/**/*.js', '!./wwwroot/js/**/*.min.js'],
     sassSrc: ['./wwwroot/sass/**/*.scss', './wwwroot/sass/*.scss'],
-    concatJsDest: './wwwroot/js/site.min.js',
+    concatJsDest: ['./wwwroot/js/*.min.js'],
     cssSrc: ['./wwwroot/css/**/*.css'],
     cssDest: "./wwwroot/css",
     jsDest: "./wwwroot/js",

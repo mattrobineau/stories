@@ -82,9 +82,13 @@ h6 {
 .nav-link-home {
 }
 
-div#stories ol, div#comments ol {
+div#stories ol {
     list-style-type: none;
     padding: 0;
+}
+
+div.comment ol {
+    padding: 0px 18px;
 }
 
 div.story, div#comments {
@@ -96,17 +100,17 @@ div.story h3 {
 }
 
 div.vote, div.score {
-    width: 48px;
     text-align: center;
+    font-size: 12px;
 }
 
 div.score {
     font-family: $font-emphasis;
     font-weight: $font-normal;
-    font-size: 14px;
 }
 
 div.vote {
+    padding-right: 12px;
     float: left;
     display: inline-block;
     text-align: center;
@@ -122,9 +126,12 @@ div.comment-meta {
 }
 
 div.story-details, div.comment-details {
-    margin-left: 48px;
     margin-right: 48px;
     font-size: 12px;
+}
+
+div.comment-details {
+    margin-left: 0px;
 }
 
 div#comments {
@@ -285,4 +292,8 @@ div#error {
     font-weight: bold;
     color: $blue;
     padding-top: 48px;
+}
+
+.form-control {
+    font-size: 14px;
 }

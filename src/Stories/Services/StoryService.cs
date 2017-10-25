@@ -61,8 +61,7 @@ namespace Stories.Services
             var ids = new Hashids(minHashLength: 5);
             var storyId = ids.Decode(hashId).First();
 
-            var story = await StoriesDbContext.Stories.Include(s => s.Comments)
-                                                      .SingleOrDefaultAsync(s => s.Id == storyId);
+            var story = await StoriesDbContext.Stories.SingleOrDefaultAsync(s => s.Id == storyId);
 
             if (story == null)
                 return null;
@@ -83,7 +82,11 @@ namespace Stories.Services
                                                               .Select(f => (int)f.CommentId)
                                                               .ToListAsync();
 
-            foreach (var comment in story.Comments.OrderByDescending(c => c.Score?.Value).Where(c => c.ParentCommentId == null))
+            var comments = await StoriesDbContext.Comments.Include(c => c.User)
+                                                          .Where(c => c.StoryId == story.Id)
+                                                          .ToListAsync();
+
+            foreach (var comment in comments.OrderByDescending(c => c.Score?.Value).Where(c => c.ParentCommentId == null))
                 model.Comments.Add(MapCommentToCommentViewModel(comment, upvotedComments, flaggedComments));
 
             return model;

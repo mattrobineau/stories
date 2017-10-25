@@ -11,7 +11,7 @@
 
         $("#signin").on("click", "button.submit", function () {
             signin().done(function (data) {
-                if (data.status == false) {
+                if (data.status === false) {
                     showErrors(data.messages);
 
                     return false;
@@ -20,14 +20,14 @@
                     showErrors();
                 }
 
-                window.location.href = $.QueryString["returnUrl"];
+                window.location.href = $.QueryString.returnUrl;
                 return false;
             });
         });
 
         $("#signup").on("click", "button.signup", function () {
             signup().done(function (data) {
-                if (data.status == false) {
+                if (data.status === false) {
                     showErrors(data.messages);
                     return false;
                 }
@@ -35,7 +35,7 @@
                     showErrors();
                 }
 
-                window.location.href = $.QueryString["returnUrl"];
+                window.location.href = $.QueryString.returnUrl;
                 return false;
             });
         });
@@ -45,7 +45,7 @@
             $parent.find("sucess").addClass("hidden");
 
             invite($parent.data("url"), $parent.find(".email").val()).done(function (data) {
-                if (data.status == false) {
+                if (data.status === false) {
                     showErrors(data.messages);
                     return false;
                 }
@@ -73,7 +73,7 @@
             var url = $parent.data("url");
 
             referral(url, data).done(function () {
-                if (data.status == false) {
+                if (data.status === false) {
                     showErrors(data.messages);
                     return false;
                 }
@@ -98,7 +98,7 @@
                 $parent.find("#NewPassword").val("");
                 $parent.find("#ConfirmNewPassword").val("");
 
-                if (data.status == false) {
+                if (data.status === false) {
                     showErrors(data.messages);
                     return false;
                 }
@@ -121,7 +121,7 @@
             }
 
             toggleVote($voteParent.data("url"), $parent.data("hashid")).done(function (data) {
-                if (data.status == false) {
+                if (data.status === false) {
                     showErrors(data.messages);
                     return false;
                 }
@@ -147,7 +147,7 @@
     });
 
     function signin() {
-        var data = { Email: $("#signin .email").val(), Password: $("#signin .password").val() }
+        var data = { Email: $("#signin .email").val(), Password: $("#signin .password").val() };
 
         return $.ajax({
             url: $("#signin").data("url"),
@@ -155,7 +155,7 @@
             dateType: "json",
             data: data
         });
-    };
+    }
 
     function signup() {
         var data = {
@@ -171,7 +171,7 @@
             dateType: "json",
             data: data
         });
-    };
+    }
 
     function changepassword(data) {
         return $.ajax({
@@ -180,7 +180,7 @@
             dataType: "json",
             data: data
         });
-    };
+    }
 
     function toggleVote(url, hashid) {
         return $.ajax({
@@ -189,7 +189,7 @@
             dataType: "json",
             data: { hashId: hashid }
         });
-    };
+    }
 
     function invite(url, email) {
         return $.ajax({
@@ -198,7 +198,7 @@
             dataType: "json",
             data: { Email: email }
         });
-    };
+    }
 
     function referral(url, data) {
         return $.ajax({
@@ -207,7 +207,7 @@
             dataType: "json",
             data: data
         });
-    };
+    }
 
     function showErrors(messages) {
         var $errorDiv = $("div#error");
@@ -216,7 +216,7 @@
         if (!messages || messages.length <= 0) {
             if (!$errorDiv.hasClass("hidden"))
                 $errorDiv.addClass("hidden");
-            
+
             return;
         }
 
@@ -226,10 +226,10 @@
         for (var i = 0; i < messages.length; i++) {
             $errorDiv.append($("<div></div>").addClass("error").append($("<span></span>").text(messages[i])));
         }
-    };
+    }
 
     $.QueryString = (function (a) {
-        if (a == "") return {};
+        if (a === "") return {};
         var b = {};
         for (var i = 0; i < a.length; ++i) {
             var p = a[i].split('=', 2);
@@ -237,6 +237,6 @@
             b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
         }
         return b;
-    })(window.location.search.substr(1).split('&'))
+    })(window.location.search.substr(1).split('&'));
 
 }(window.jQuery, window, document));

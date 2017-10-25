@@ -49,6 +49,13 @@ namespace Stories.Controllers
         [Authorize(Roles = Roles.User)]
         public async Task<IActionResult> Add(AddCommentViewModel model)
         {
+            if (!Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId))
+            {
+                return Json(new { Status = false, Messages = new string[] { "Error deleting comment." } });
+            }
+
+            model.UserId = userId;
+
             var validationResult = AddCommentViewModelValidator.Validate(model);
 
             if (!validationResult.IsValid)
@@ -56,12 +63,6 @@ namespace Stories.Controllers
                 return Json(new { Status = validationResult.IsValid, Messages = validationResult.Messages });
             }
 
-            Guid userId;
-            if (!Guid.TryParse(CurrentUser.NameIdentifier, out userId))
-            {
-                return Json(new { Status = false, Messages = new string[] { "Error adding comment." } });
-            }
-            
             model.UserId = userId;
 
             var commentModel = await CommentService.Add(model);
