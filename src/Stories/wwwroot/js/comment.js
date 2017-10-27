@@ -61,7 +61,12 @@
         $("div#comments").on("click", "a.reply", function () {
             var $this = $(this);
 
-            var url = $("#add-comment").data("url"); // Not using this variable? why?
+            var exists = $this.closest(".comment").find(".comment-reply");
+
+            if (exists.length > 0) {
+                return false;
+            }
+
             var div = $("<div></div>").addClass("comment-reply");
             var textArea = $("<textarea></textarea>").addClass("form-control add-comment").attr("rows", 5);
 
