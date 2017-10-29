@@ -3,7 +3,7 @@ solution: Stories.sln
 mono: none
 dist: trusty
 sudo: required
-dotnet: 1.1.1
+dotnet: 1.1.2
 
 before_install:
 - chmod +x ./build/scripts/build.sh
