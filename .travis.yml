@@ -7,7 +7,7 @@ dotnet: 1.0.4
 
 before_install:
 - npm install -g gulp
-- gulp restore && gulp build
+- npm install
 - chmod +x ./build/scripts/build.sh
 - chmod +x ./build/scripts/test.sh
 
