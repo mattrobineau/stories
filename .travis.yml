@@ -6,6 +6,7 @@ sudo: required
 dotnet: 1.0.4
 
 before_install:
+- npm install -g gulp
 - chmod +x ./build/scripts/build.sh
 - chmod +x ./build/scripts/test.sh
 
