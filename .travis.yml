@@ -8,9 +8,6 @@ dotnet: 1.0.4
 before_install:
 - chmod +x ./build/scripts/build.sh
 - chmod +x ./build/scripts/test.sh
-- npm install -g gulp
-- npm link gulp
-- npm install ./src/Stories/
 
 script:
 - ./build/scripts/build.sh --quiet verify
