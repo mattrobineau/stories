@@ -8,9 +8,6 @@ dotnet: 1.0.4
 before_install:
 - chmod +x ./build/scripts/build.sh
 - chmod +x ./build/scripts/test.sh
-- "npm config set spin false"
-- "npm install -g npm@^3"
-- "npm install -g gulp@^3"
 
 script:
 - ./build/scripts/build.sh --quiet verify
