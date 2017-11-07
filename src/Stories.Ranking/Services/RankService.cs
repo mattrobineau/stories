@@ -11,6 +11,10 @@ namespace Stories.Ranking.Services
     {
         private readonly IDbContext dbContext;
 
+        public RankService(IDbContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
         public async Task<bool> CalculateStoryScore(int id)
         {
             var story = await dbContext.Stories.Include(s => s.Score)

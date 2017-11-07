@@ -11,7 +11,6 @@ namespace Stories.Validation.Validators
     public class BanUserModelValidator : IValidator<BanUserModel>
     {
         private readonly IUserRules UserRules;
-        private readonly IDbContext DbContext;
         private readonly IUserService UserService;
 
         public BanUserModelValidator(IUserRules userRules, IDbContext dbContext, IUserService userService)
