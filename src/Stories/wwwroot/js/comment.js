@@ -10,7 +10,7 @@
                 CommentMarkdown: $textarea.val(),
             };
 
-            addComment(data).success(function (data) {
+            addComment(data).done(function (data) {
                 if (data.status === false) {
                     showErrors(data.messages);
                     return false;
@@ -18,9 +18,10 @@
                 else {
                     showErrors();
                 }
-
+                
                 $.get($("#comments").data("get") + "/?hashId=" + data.commentHashId, function (data) {
-                    $(data).prependTo("#comments");
+                    var $comment = $(data).prependTo("#comments");
+                    Time.setTime($comment.find("time"));
                 });
 
                 $textarea.val("");
@@ -39,7 +40,7 @@
                 CommentMarkdown: $textarea.val(),
             };
 
-            addComment(data).success(function (data) {
+            addComment(data).done(function (data) {
                 if (data.status === false) {
                     showErrors(data.messages);
                     return false;
@@ -49,7 +50,9 @@
                 }
 
                 $.get($("#comments").data("get") + "/?hashId=" + data.commentHashId, function (data) {
-                    $parent.after($("<ol><li></li></ol>").append(data).addClass("reply"));
+                    var $data = $(data);
+                    Time.setTime($data.find("time"));
+                    $parent.after($("<ol><li></li></ol>").append($data).addClass("reply"));
                 });
 
                 $parent.find(".comment-reply").remove();
@@ -89,7 +92,7 @@
                 }
             };
 
-            flagStory(data).success(function (data) {
+            flagStory(data).done(function (data) {
                 if (data.status === false) {
                     showErrors(data.messages);
                     return false;
@@ -101,42 +104,43 @@
                 return false;
             });
         });
+
+
+        function addComment(data, callback) {
+            return $.ajax({
+                url: $("#add-comment").data("url"),
+                type: "POST",
+                dataType: "json",
+                data: data,
+            });
+        }
+
+        function showErrors(messages) {
+            var $errorDiv = $("div#error");
+            $errorDiv.find(".error").remove();
+
+            if (!messages || messages.length <= 0) {
+                if (!$errorDiv.hasClass("hidden"))
+                    $errorDiv.addClass("hidden");
+
+                return;
+            }
+
+            if ($errorDiv.hasClass('hidden'))
+                $errorDiv.removeClass('hidden');
+
+            for (var i = 0; i < messages.length; i++) {
+                $errorDiv.append($("<div></div>").addClass("error").append($("<span></span>").text(messages[i])));
+            }
+        }
+
+        function flagStory(data) {
+            return $.ajax({
+                url: data.url,
+                type: "POST",
+                dataType: "json",
+                data: data.body
+            });
+        }
     });
-
-    function addComment(data) {
-        return $.ajax({
-            url: $("#add-comment").data("url"),
-            type: "POST",
-            dataType: "json",
-            data: data
-        });
-    }
-
-    function showErrors(messages) {
-        var $errorDiv = $("div#error");
-        $errorDiv.find(".error").remove();
-
-        if (!messages || messages.length <= 0) {
-            if (!$errorDiv.hasClass("hidden"))
-                $errorDiv.addClass("hidden");
-
-            return;
-        }
-
-        if ($errorDiv.hasClass('hidden'))
-            $errorDiv.removeClass('hidden');
-
-        for (var i = 0; i < messages.length; i++) {
-            $errorDiv.append($("<div></div>").addClass("error").append($("<span></span>").text(messages[i])));
-        }
-    }
-
-    function flagStory(data) {
-        return $.ajax({
-            url: data.url,
-            type: "POST",
-            dataType: "json",
-            data: data.body
-        });
-    }
 }(window.jQuery, window, document));

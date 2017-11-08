@@ -72,7 +72,7 @@
 
             var url = $parent.data("url");
 
-            referral(url, data).done(function () {
+            referral(url, data).done(function (data) {
                 if (data.status === false) {
                     showErrors(data.messages);
                     return false;
@@ -93,7 +93,7 @@
                 ConfirmNewPassword: $parent.find("#ConfirmNewPassword").val()
             };
 
-            changepassword(data).success(function (data) {
+            changepassword(data).done(function (data) {
                 $parent.find("#OldPassword").val("");
                 $parent.find("#NewPassword").val("");
                 $parent.find("#ConfirmNewPassword").val("");
