@@ -24,9 +24,10 @@ namespace Stories.Controllers
         private readonly IValidator<SignupViewModel> SignupValidator;
         private readonly IValidator<ChangePasswordModel> ChangePasswordValidator;
         private readonly IValidator<InviteModel> InviteModelValidator;
+        private readonly IUserStoryService userStoryService;
 
         public UserController(IUserService userService, IAuthenticationService authenticationService, IEmailRule emailBusinessRule, IMailService mailService, IReferralService referralService,
-                              IValidator<SignupViewModel> signupValidator, IValidator<ChangePasswordModel> changePasswordValidator, IValidator<InviteModel> inviteModelValidator)
+                              IValidator<SignupViewModel> signupValidator, IValidator<ChangePasswordModel> changePasswordValidator, IValidator<InviteModel> inviteModelValidator, IStoryService storyService)
         {
             UserService = userService;
             AuthenticationService = authenticationService;
@@ -36,6 +37,7 @@ namespace Stories.Controllers
             SignupValidator = signupValidator;
             ChangePasswordValidator = changePasswordValidator;
             InviteModelValidator = inviteModelValidator;
+
         }
 
         [Authorize(Roles = Roles.User)]
@@ -66,12 +68,12 @@ namespace Stories.Controllers
             {
                 Username = userModel.Username,
                 IsBanned = userModel.IsBanned,
-                BanReason = userModel.BanModel.Reason,
+                BanReason = userModel.BanModel?.Reason,
                 CreatedDate = userModel.CreatedDate.ToString("o"),
                 //RecentComments = ,
                 //RecentStories = 
             };
-            return View();
+            return View(model);
         }
 
         [Authorize(Roles = Roles.User)]

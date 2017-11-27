@@ -8,9 +8,10 @@ using Stories.Data.DbContexts;
 namespace Stories.Migrations
 {
     [DbContext(typeof(StoriesDbContext))]
-    partial class StoriesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171109052650_StoriesIsDeletedFlag")]
+    partial class StoriesIsDeletedFlag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)

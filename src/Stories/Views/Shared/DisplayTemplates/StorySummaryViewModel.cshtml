@@ -33,7 +33,7 @@
             {
                 <span class="username">posted by</span>
             }
-            <a href="#"><span class="username">@Model.SubmitterUsername</span></a>
+            <a href="@Url.Action("ViewUser", "User", new { username = Model.SubmitterUsername })"><span class="username">@Model.SubmitterUsername</span></a>
             <time datetime="@Model.SubmittedDate"></time>
             <a href="@Url.Action("Index","Story", new { hashId = Model.HashId })">
                 <i class="fa fa-comments" aria-hidden="true"></i>

@@ -251,3 +251,8 @@ ModelManifest.xml
 /src/Stories/wwwroot/css
 /src/Stories/appsettings.Release.json
 /src/Stories/appsettings.Release.json
+/src/Stories/wwwroot/js/time.min.js
+/src/Stories/wwwroot/js/story.min.js
+/src/Stories/wwwroot/js/site.min.js
+/src/Stories/wwwroot/js/comment.min.js
+/src/Stories/wwwroot/js/admin.min.js
