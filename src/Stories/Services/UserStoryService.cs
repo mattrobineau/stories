@@ -25,6 +25,7 @@ namespace Stories.Services
             var stories = await DbContext.Stories.Where(s => s.UserId == forUserId && s.IsDeleted == includeDeleted)
                                                  .Include(s => s.Comments)
                                                  .Include(s => s.Score)
+                                                 .Include(s => s.Flags)
                                                  .OrderByDescending(s => s.CreatedDate)
                                                  .Skip(page * pageSize)
                                                  .Take(pageSize)
@@ -62,14 +63,16 @@ namespace Stories.Services
                 {
                     CommentCount = story.Comments.Count(),
                     Description = story.Description,
+                    Flags = story.Flags.Count(),
                     Hostname = uri.Host,
                     Id = story.Id,
                     SubmittedDate = story.CreatedDate,
+                    SubmitterUsername = submitterUsername,
                     Title = story.Title,
                     Upvotes = story.Upvotes,
                     Url = uri?.ToString(),
-                    UserUpvoted = upvotedStories.Contains(story.Id),
-                    SubmitterUsername = submitterUsername
+                    UserFlagged = story.Flags.Any(f => f.UserId == callingUserId),
+                    UserUpvoted = upvotedStories.Contains(story.Id)
                 };
 
                 models.Add(model);
