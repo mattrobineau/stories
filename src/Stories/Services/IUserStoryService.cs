@@ -7,6 +7,6 @@ namespace Stories.Services
 {
     public interface IUserStoryService
     {
-        Task<List<StoryModel>> GetRecent(Guid userId);
+        Task<List<StoryModel>> GetRecent(Guid forUserId, Guid callingUserId, int page, int pageSize, bool includeDeleted = false);
     }
 }

@@ -10,8 +10,6 @@ namespace Stories.Models.ViewModels.User
         public string BanReason { get; set; }
         public string Username { get; set; }
         public int Score { get; set; }
-        public List<StorySummaryViewModel> RecentStories { get; set; } = new List<StorySummaryViewModel>();
-        public List<CommentViewModel> RecentComments { get; set; } = new List<CommentViewModel>();
         public ChangePasswordViewModel ChangePasswordViewModel { get; set; }
     }
 }

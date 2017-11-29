@@ -18,33 +18,39 @@ namespace Stories.Services
             DbContext = dbContext;
         }
 
-        public async Task<List<StoryModel>> GetRecent(Guid userId)
-        {
-            var stories = await DbContext.Stories.Where(s => s.UserId == userId && !s.IsDeleted)
-                                                 .OrderByDescending(s => s.CreatedDate)
-                                                 .Take(5)
-                                                 .Include(s => s.User)
-                                                 .ToListAsync();
-
-           return MapStoryToModel(stories);
-        }
-
-        public async Task<List<StoryModel>> GetAll(Guid userId, bool includeDeleted)
-        {
-            var stories = await DbContext.Stories.Where(s => s.UserId == userId)
-                                                 .OrderByDescending(s => s.CreatedDate)
-                                                 .Include(s => s.User)
-                                                 .ToListAsync();
-
-           return MapStoryToModel(stories);
-            
-        }
-
-        private List<StoryModel> MapStoryToModel(List<Story> stories)
+        public async Task<List<StoryModel>> GetRecent(Guid forUserId, Guid callingUserId, int page, int pageSize, bool includeDeleted = false)
         {
             var models = new List<StoryModel>();
 
-            foreach(var story in stories)
+            var stories = await DbContext.Stories.Where(s => s.UserId == forUserId && s.IsDeleted == includeDeleted)
+                                                 .Include(s => s.Comments)
+                                                 .Include(s => s.Score)
+                                                 .OrderByDescending(s => s.CreatedDate)
+                                                 .Skip(page * pageSize)
+                                                 .Take(pageSize)
+                                                 .ToListAsync();
+
+            return await MapStoriesToModel(stories, forUserId, callingUserId);
+
+        }
+
+        private async Task<List<StoryModel>> MapStoriesToModel(List<Story> stories, Guid forUserId, Guid callingUserId)
+        {
+            var models = new List<StoryModel>();
+
+            if (!stories.Any())
+            {
+                return models;
+            }
+
+            var upvotedStories = await DbContext.Votes.Where(v => stories.Any(s => s.Id == v.StoryId) && v.UserId == callingUserId)
+                                                     .Select(v => v.StoryId.Value).ToArrayAsync();
+
+            var submitterUsername = await DbContext.Users.Where(u => u.Id == forUserId)
+                                                         .Select(u => u.Username)
+                                                         .FirstOrDefaultAsync();
+
+            foreach (var story in stories)
             {
                 UriBuilder uri = null;
                 if (!string.IsNullOrEmpty(story.Url))
@@ -62,7 +68,8 @@ namespace Stories.Services
                     Title = story.Title,
                     Upvotes = story.Upvotes,
                     Url = uri?.ToString(),
-                    UserUpvoted = false
+                    UserUpvoted = upvotedStories.Contains(story.Id),
+                    SubmitterUsername = submitterUsername
                 };
 
                 models.Add(model);

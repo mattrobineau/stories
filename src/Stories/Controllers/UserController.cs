@@ -70,8 +70,6 @@ namespace Stories.Controllers
                 IsBanned = userModel.IsBanned,
                 BanReason = userModel.BanModel?.Reason,
                 CreatedDate = userModel.CreatedDate.ToString("o"),
-                //RecentComments = ,
-                //RecentStories = 
             };
             return View(model);
         }
@@ -106,6 +104,26 @@ namespace Stories.Controllers
             var result = await AuthenticationService.ChangePassword(changePasswordModel);
 
             return Json(new { Status = result });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Roles.User)]
+        public async Task<IActionResult> CommentHistory(string username)
+        {
+            if(User.IsInRole(Roles.Moderator) || User.IsInRole(Roles.Admin))
+            {
+
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Roles.User)]
+        public async Task<IActionResult> History(string username)
+        {
+            if(User.IsInRole(Roles.Moderator) || User.IsInRole(Roles.Admin))
+            {
+
+            }
         }
 
         [HttpGet]
