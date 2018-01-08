@@ -33,6 +33,11 @@ namespace Stories.Controllers
             return View(await StoryService.GetNew(page, 20, null));
         }
 
+        public IActionResult Guidelines()
+        {
+            return View();
+        }
+
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";

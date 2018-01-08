@@ -1,0 +1,15 @@
+﻿@model Stories.Models.ViewModels.PaginationViewModel
+
+<section>
+    <div class="pagination">
+        <i class="fa fa-angle-double-left" aria-hidden="true"></i> <!-- First -->
+        <i class="fa fa-angle-left" aria-hidden="true"></i> <!-- Back -->
+
+        @for (var i = Model.Page-5; i <= Model.Page+5; i++) { 
+            <a class="page-selector" data-page="@i" href="#">@i</a>
+        }
+        
+        <i class="fa fa-angle-right" aria-hidden="true"></i> <!-- Forward -->
+        <i class="fa fa-angle-double-right" aria-hidden="true"></i> <!-- Last -->
+    </div>
+</section>

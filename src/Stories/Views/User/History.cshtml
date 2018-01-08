@@ -1,0 +1,11 @@
+﻿@model Stories.Models.ViewModels.User.CommentHistoryViewModel
+
+<section>
+    <div>
+        @foreach(var model in Model.Comments)
+        {
+            @Html.DisplayFor(c => model)
+        }
+    </div>
+    <div>@Html.DisplayFor(c => c.Pagination)</div>
+</section>

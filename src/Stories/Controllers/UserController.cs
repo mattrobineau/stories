@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using HashidsNet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stories.Attributes;
 using Stories.Constants;
+using Stories.Models.Comment;
 using Stories.Models.Users;
 using Stories.Models.ViewModels;
 using Stories.Models.ViewModels.User;
@@ -24,10 +26,11 @@ namespace Stories.Controllers
         private readonly IValidator<SignupViewModel> SignupValidator;
         private readonly IValidator<ChangePasswordModel> ChangePasswordValidator;
         private readonly IValidator<InviteModel> InviteModelValidator;
-        private readonly IUserStoryService userStoryService;
+        private readonly IUserCommentService userCommentService;
 
         public UserController(IUserService userService, IAuthenticationService authenticationService, IEmailRule emailBusinessRule, IMailService mailService, IReferralService referralService,
-                              IValidator<SignupViewModel> signupValidator, IValidator<ChangePasswordModel> changePasswordValidator, IValidator<InviteModel> inviteModelValidator, IStoryService storyService)
+                              IValidator<SignupViewModel> signupValidator, IValidator<ChangePasswordModel> changePasswordValidator, IValidator<InviteModel> inviteModelValidator,
+                              IStoryService storyService, IUserCommentService userCommentService)
         {
             UserService = userService;
             AuthenticationService = authenticationService;
@@ -37,7 +40,7 @@ namespace Stories.Controllers
             SignupValidator = signupValidator;
             ChangePasswordValidator = changePasswordValidator;
             InviteModelValidator = inviteModelValidator;
-
+            this.userCommentService = userCommentService;
         }
 
         [Authorize(Roles = Roles.User)]
@@ -96,7 +99,7 @@ namespace Stories.Controllers
 
             var validationResult = ChangePasswordValidator.Validate(changePasswordModel);
 
-            if(!validationResult.IsValid)
+            if (!validationResult.IsValid)
             {
                 return Json(new { status = false, messages = validationResult.Messages });
             }
@@ -106,24 +109,65 @@ namespace Stories.Controllers
             return Json(new { Status = result });
         }
 
-        [HttpPost]
         [Authorize(Roles = Roles.User)]
-        public async Task<IActionResult> CommentHistory(string username)
+        public async Task<IActionResult> History(string username, PaginationViewModel pagination)
         {
-            if(User.IsInRole(Roles.Moderator) || User.IsInRole(Roles.Admin))
+            IList<CommentModel> commentModels = new List<CommentModel>();
+            Guid.TryParse(CurrentUser.NameIdentifier, out Guid userId);
+            var models = new List<CommentViewModel>();
+
+            var user = await UserService.GetUser(username);
+
+            if (user == null)
             {
-
+                return NotFound();
             }
-        }
 
-        [HttpPost]
-        [Authorize(Roles = Roles.User)]
-        public async Task<IActionResult> History(string username)
-        {
-            if(User.IsInRole(Roles.Moderator) || User.IsInRole(Roles.Admin))
+            if (pagination == null)
             {
-
+                pagination = new PaginationViewModel { PageSize = 15 };
             }
+
+            if (User.IsInRole(Roles.Moderator) || User.IsInRole(Roles.Admin))
+            {
+                commentModels = await userCommentService.GetRecent(user.UserId, userId, pagination.Page, pagination.PageSize, true);
+                pagination.PageCount = await userCommentService.GetRecentCommentPageCount(user.UserId, true);
+            }
+            else
+            {
+                commentModels = await userCommentService.GetRecent(user.UserId, userId, pagination.Page, pagination.PageSize);
+                pagination.PageCount = await userCommentService.GetRecentCommentPageCount(user.UserId);
+            }
+
+            foreach (var comment in commentModels)
+            {
+                var ids = new Hashids(minHashLength: 5);
+
+                var model = new CommentViewModel
+                {
+                    Content = comment.Content,
+                    HashId = ids.Encode(comment.Id),
+                    IsEdited = comment.IsEdited,
+                    StoryHashId = ids.Encode(comment.StoryId),
+                    SubmittedDate = comment.SubmittedDate.ToString("o"),
+                    Upvotes = comment.Upvotes,
+                    UserFlagged = comment.UserFlagged,
+                    Username = comment.SubmittedUsername,
+                    UserUpvoted = comment.UserUpvoted
+                };
+
+                models.Add(model);
+            }
+
+            return View(new CommentHistoryViewModel {
+                Comments = models,
+                Pagination = new PaginationViewModel
+                {
+                    Page = pagination.Page,
+                    PageCount = pagination.PageCount,
+                    PageSize = pagination.PageSize
+                }
+            });
         }
 
         [HttpGet]
@@ -159,7 +203,7 @@ namespace Stories.Controllers
             var validationResult = SignupValidator.Validate((SignupViewModel)model);
 
             if (!validationResult.IsValid)
-                return Json(new { Status = false, Messages = validationResult.Messages });
+                return Json(new { Status = false, validationResult.Messages });
 
             if (!Guid.TryParse(model.Code, out Guid code))
                 return Json(new { Status = false, Messages = new string[] { "Invalid referral code." } });
@@ -202,7 +246,7 @@ namespace Stories.Controllers
             var validationResult = InviteModelValidator.Validate(inviteModel);
 
             if (!validationResult.IsValid)
-                return Json(new { Status = false, Messages = validationResult.Messages });
+                return Json(new { Status = false, validationResult.Messages });
 
             if (!await ReferralService.SendInvite(inviteModel))
                 return Json(new { Status = false, Messages = new string[] { "Error sending invite. Try again later." } });

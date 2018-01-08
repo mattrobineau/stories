@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Stories.Services
 {
-    public class UserCommentService
+    public class UserCommentService : IUserCommentService
     {
         private readonly IDbContext dbContext;
 
@@ -28,6 +28,13 @@ namespace Stories.Services
                                                    .ToListAsync();
 
             return await  MapCommentsToModels(comments, forUserId, callingUserId);
+        }
+
+        public async Task<int> GetRecentCommentPageCount(Guid forUserId, bool includeDeleted = false)
+        {
+            return await dbContext.Comments.Include(c => c.Flags)
+                                            .Where(c => c.UserId == forUserId && c.IsDeleted == includeDeleted)
+                                            .CountAsync();
         }
 
         private async Task<IList<CommentModel>> MapCommentsToModels(IList<Comment> comments, Guid forUserId, Guid callingUserId)
