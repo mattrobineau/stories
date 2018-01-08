@@ -26,7 +26,8 @@ namespace Stories.Services
                                                    .Skip(page * pageSize)
                                                    .Take(pageSize)
                                                    .ToListAsync();
-            return null;
+
+            return await  MapCommentsToModels(comments, forUserId, callingUserId);
         }
 
         private async Task<IList<CommentModel>> MapCommentsToModels(IList<Comment> comments, Guid forUserId, Guid callingUserId)
