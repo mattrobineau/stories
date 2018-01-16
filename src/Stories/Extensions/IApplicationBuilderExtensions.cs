@@ -11,19 +11,23 @@ namespace Stories.Extensions
     {
         public static void SeedData(this IApplicationBuilder app)
         {
-            var context = app.ApplicationServices.GetService<StoriesDbContext>();
- 
-            if (!context.Roles.Any())
+            using (var serviceScope = app.ApplicationServices.CreateScope())
             {
-                var roles = new List<Role>
+                var context = serviceScope.ServiceProvider.GetService<StoriesDbContext>();
+
+                // Seed the database.
+                if (!context.Roles.Any())
+                {
+                    var roles = new List<Role>
                         {
                             new Role { Name = "Admin" },
                             new Role { Name = "Moderator" },
                             new Role { Name = "User" }
                         };
 
-                context.Roles.AddRange(roles.ToArray());
-                context.SaveChanges();
+                    context.Roles.AddRange(roles.ToArray());
+                    context.SaveChanges();
+                }
             }
         }
     }

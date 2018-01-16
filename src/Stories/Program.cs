@@ -39,7 +39,8 @@ namespace Stories
         {
             return WebHost.CreateDefaultBuilder(args)
                      .UseKestrel()
-                     .UseContentRoot(Directory.GetCurrentDirectory())                     
+                     .UseContentRoot(Directory.GetCurrentDirectory())
+                     .UseIISIntegration()
                      .UseStartup<Startup>()
                      .UseSerilog()
                      .Build();
