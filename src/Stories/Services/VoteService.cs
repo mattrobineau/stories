@@ -1,5 +1,6 @@
 ﻿using HashidsNet;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Stories.Data.DbContexts;
 using Stories.Data.Entities;
 using Stories.Models.Votes;

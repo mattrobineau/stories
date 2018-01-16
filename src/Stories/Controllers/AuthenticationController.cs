@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Stories.Constants;
 using Stories.Models.Users;
 using Stories.Models.ViewModels;
@@ -19,14 +20,17 @@ namespace Stories.Controllers
         private readonly Services.IAuthenticationService AuthenticationService;
         private readonly IUserService UserService;
         private readonly IValidator<LoginViewModel> LoginViewModelValidator;
+        private readonly ILogger<AuthController> logger;
         private readonly IValidator<SignupViewModel> SignupValidator;
 
-        public AuthController(Services.IAuthenticationService authenticationService, IUserService userService, IValidator<SignupViewModel> signupValidator, IValidator<LoginViewModel> loginViewModelValidator)
+        public AuthController(Services.IAuthenticationService authenticationService, IUserService userService, IValidator<SignupViewModel> signupValidator, 
+                              IValidator<LoginViewModel> loginViewModelValidator, ILogger<AuthController> logger)
         {
             AuthenticationService = authenticationService;
             UserService = userService;
             SignupValidator = signupValidator;
             LoginViewModelValidator = loginViewModelValidator;
+            this.logger = logger;
         }
 
         [HttpGet]

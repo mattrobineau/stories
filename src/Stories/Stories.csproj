@@ -51,6 +51,10 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.0.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="2.0.0-preview1" />
     <PackageReference Include="RestSharp.NetCore" Version="105.2.4-rc4-24214-01" />
+    <PackageReference Include="Serilog.AspNetCore" Version="2.1.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
+    <PackageReference Include="Serilog.Sinks.RollingFile.Extension" Version="1.0.5" />
     <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" Version="4.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.1" />
     <PackageReference Include="CommonMark.NET" Version="0.15.1" />

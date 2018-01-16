@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Stories.Services;
 using System;
 using System.Threading.Tasks;
@@ -8,10 +9,12 @@ namespace Stories.Controllers
     public class HomeController : BaseController
     {
         private IStoryService StoryService;
+        private ILogger<HomeController> Logger { get; }
 
-        public HomeController(IStoryService storyService)
+        public HomeController(IStoryService storyService, ILogger<HomeController> logger)
         {
             StoryService = storyService;
+            Logger = logger;
         }
 
         public async Task<IActionResult> Index(int page)

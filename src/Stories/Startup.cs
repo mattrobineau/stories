@@ -30,7 +30,6 @@ namespace Stories
 {
     public class Startup
     {
-
         private Container container = new Container();
 
         public Startup(IHostingEnvironment env)
@@ -60,7 +59,7 @@ namespace Stories
         {
 
             // Add framework services.
-            services.AddApplicationInsightsTelemetry(Configuration);
+            //services.AddApplicationInsightsTelemetry(Configuration); Add serilog sync instead
 
             services.AddDbContext<StoriesDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("NpgsqlConnection"), b => b.MigrationsAssembly("Stories")), ServiceLifetime.Scoped);
 
@@ -121,6 +120,7 @@ namespace Stories
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 serviceScope.ServiceProvider.GetService<StoriesDbContext>().Database.Migrate();
