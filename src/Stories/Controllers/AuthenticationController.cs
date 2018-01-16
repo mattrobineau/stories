@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stories.Constants;
 using Stories.Models.Users;
@@ -14,12 +16,12 @@ namespace Stories.Controllers
 {
     public class AuthController : BaseController
     {
-        private readonly IAuthenticationService AuthenticationService;
+        private readonly Services.IAuthenticationService AuthenticationService;
         private readonly IUserService UserService;
         private readonly IValidator<LoginViewModel> LoginViewModelValidator;
         private readonly IValidator<SignupViewModel> SignupValidator;
 
-        public AuthController(IAuthenticationService authenticationService, IUserService userService, IValidator<SignupViewModel> signupValidator, IValidator<LoginViewModel> loginViewModelValidator)
+        public AuthController(Services.IAuthenticationService authenticationService, IUserService userService, IValidator<SignupViewModel> signupValidator, IValidator<LoginViewModel> loginViewModelValidator)
         {
             AuthenticationService = authenticationService;
             UserService = userService;
@@ -136,7 +138,8 @@ namespace Stories.Controllers
                 identity.AddClaim(new Claim(ClaimTypes.Role, role.Name));
             }
 
-            await HttpContext.Authentication.SignInAsync("StoriesCookieAuthentication", new ClaimsPrincipal(identity));
+            //await HttpContext.Authentication.SignInAsync("StoriesCookieAuthentication", new ClaimsPrincipal(identity));
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
             return true;
         }

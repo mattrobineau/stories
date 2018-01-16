@@ -14,7 +14,6 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog.Extensions.Logging;
 using RabbitMQ.Client;
 using System.Linq;
 
@@ -43,7 +42,7 @@ namespace Stories.Messaging.RankComsumer
                 }
                 catch (Exception e)
                 {
-                    logger.LogCritical($"Unable to get connection to RabbitMQ: {e.ToString()}", e.ToString());
+                    //logger.LogCritical($"Unable to get connection to RabbitMQ: {e.ToString()}", e.ToString());
                     return;
                 }
 
@@ -55,7 +54,7 @@ namespace Stories.Messaging.RankComsumer
 
                     for (var i = 0; i < 20; i++)
                     {
-                        var result = model.BasicGet(RabbitMQQueues.Stories, noAck: false); // NoAck aka, True to auto ack message, false to noack..
+                        var result = model.BasicGet(RabbitMQQueues.Stories, autoAck: false); // NoAck aka, True to auto ack message, false to noack..
 
                         if (result == null)
                             break;
@@ -82,7 +81,7 @@ namespace Stories.Messaging.RankComsumer
                         }
                         catch (Exception e)
                         {
-                            logger.LogCritical($"Story -- Exception attempting to handle message body: {result.Body}", e);
+                            //logger.LogCritical($"Story -- Exception attempting to handle message body: {result.Body}", e);
                             model.BasicReject(result.DeliveryTag, false);
                         }
                     }
@@ -92,7 +91,7 @@ namespace Stories.Messaging.RankComsumer
 
                     for (var i = 0; i < 20; i++)
                     {
-                        var result = model.BasicGet(RabbitMQQueues.Comments, noAck: false);
+                        var result = model.BasicGet(RabbitMQQueues.Comments, autoAck: false);
 
                         if (result == null)
                             break;
@@ -119,7 +118,7 @@ namespace Stories.Messaging.RankComsumer
                         }
                         catch (Exception e)
                         {
-                            logger.LogCritical($"Comment -- Exception attempting to handle message body: {result.Body} -- Stack: {e.ToString()}", e);
+                            //logger.LogCritical($"Comment -- Exception attempting to handle message body: {result.Body} -- Stack: {e.ToString()}", e);
                             model.BasicReject(result.DeliveryTag, false);
                         }
                     }
@@ -183,8 +182,8 @@ namespace Stories.Messaging.RankComsumer
             ServiceProvider = services.BuildServiceProvider();
 
             var loggerFactory = ServiceProvider.GetService<ILoggerFactory>();
-            loggerFactory.AddNLog();
-            loggerFactory.ConfigureNLog("nlog.config");
+            //loggerFactory.AddNLog();
+            //loggerFactory.ConfigureNLog("nlog.config");
         }
     }
 }

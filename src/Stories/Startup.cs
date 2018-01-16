@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -7,8 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
-using NLog.Web;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
@@ -22,6 +21,10 @@ using Stories.Services;
 using Stories.Validation.BusinessRules;
 using Stories.Validation.Validators;
 using System.Reflection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Stories
 {
@@ -61,11 +64,39 @@ namespace Stories
 
             services.AddDbContext<StoriesDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("NpgsqlConnection"), b => b.MigrationsAssembly("Stories")), ServiceLifetime.Scoped);
 
+            //app.UseCookieAuthentication(new CookieAuthenticationOptions
+            //{
+            //    AuthenticationScheme = "StoriesCookieAuthentication",
+            //    LoginPath = new PathString("/auth/login"),
+            //    AccessDeniedPath = new PathString("/auth/login"),
+            //    AutomaticAuthenticate = true,
+            //    AutomaticChallenge = true,
+            //    ReturnUrlParameter = "returnUrl"
+            //});
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(options => 
+                    {
+                        options.LoginPath = new PathString("/auth/login");
+                        options.LogoutPath = new PathString("/auth/logout");
+                        options.AccessDeniedPath = new PathString("/auth/login");
+                        options.ReturnUrlParameter = "returnUrl";
+                    });
+
+            services.AddMvcCore();
             services.AddMvc();
+            
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddSingleton<IControllerActivator>(new SimpleInjectorControllerActivator(container));
             services.AddSingleton<IViewComponentActivator>(new SimpleInjectorViewComponentActivator(container));
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = new PathString("/auth/login");
+                options.AccessDeniedPath = new PathString("/auth/login");
+                options.ReturnUrlParameter = "returnUrl";
+            });
 
             services.UseSimpleInjectorAspNetRequestScoping(container);
         }
@@ -73,23 +104,9 @@ namespace Stories
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
-            {
-                AuthenticationScheme = "StoriesCookieAuthentication",
-                LoginPath = new PathString("/auth/login"),
-                AccessDeniedPath = new PathString("/auth/login"),
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
-                ReturnUrlParameter = "returnUrl"
-            });
-
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
             InitializeContainer(app);
-
-            loggerFactory.AddNLog();
-            loggerFactory.ConfigureNLog("nlog.config");
-            app.AddNLogWeb();
 
             // Todo: This has some setup to do so we can start monitoring
             // https://blogs.msdn.microsoft.com/webdev/2015/05/19/application-insights-for-asp-net-5-youre-in-control/
@@ -106,7 +123,7 @@ namespace Stories
             }
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                serviceScope.ServiceProvider.GetService<StoriesDbContext>().Database.Migrate();                
+                serviceScope.ServiceProvider.GetService<StoriesDbContext>().Database.Migrate();
             }
 
             app.SeedData();
@@ -115,9 +132,9 @@ namespace Stories
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
-            app.AddNLogWeb();
-
             app.UseStatusCodePagesWithReExecute("/error/{0}");
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
@@ -167,8 +184,6 @@ namespace Stories
             container.Register<IMailService>(() => new MailgunEmailService(mailgunOptions));
 
             container.Register(() => Configuration.GetSection("Invites").Get<InviteOptions>(), Lifestyle.Scoped);
-
-            container.RegisterConditional(typeof(Logging.ILogger), ctx => typeof(Logging.NLogAdaptor<>).MakeGenericType(ctx.Consumer.ImplementationType), Lifestyle.Singleton, context => true);
         }
     }
 }
