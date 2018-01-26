@@ -25,6 +25,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+using Serilog.Events;
+using Stories.Logging;
 
 namespace Stories
 {
@@ -57,21 +60,9 @@ namespace Stories
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            // Add framework services.
             //services.AddApplicationInsightsTelemetry(Configuration); Add serilog sync instead
 
             services.AddDbContext<StoriesDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("NpgsqlConnection"), b => b.MigrationsAssembly("Stories")), ServiceLifetime.Scoped);
-
-            //app.UseCookieAuthentication(new CookieAuthenticationOptions
-            //{
-            //    AuthenticationScheme = "StoriesCookieAuthentication",
-            //    LoginPath = new PathString("/auth/login"),
-            //    AccessDeniedPath = new PathString("/auth/login"),
-            //    AutomaticAuthenticate = true,
-            //    AutomaticChallenge = true,
-            //    ReturnUrlParameter = "returnUrl"
-            //});
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie(options => 
@@ -184,6 +175,25 @@ namespace Stories
             container.Register<IMailService>(() => new MailgunEmailService(mailgunOptions));
 
             container.Register(() => Configuration.GetSection("Invites").Get<InviteOptions>(), Lifestyle.Scoped);
+
+            container.Register(ConfigureLogger, Lifestyle.Singleton);
+            container.Register(typeof(ILogger<>), typeof(LoggerAdapter<>));
+        }
+
+        private ILoggerFactory ConfigureLogger()
+        {
+            LoggerFactory factory = new LoggerFactory();
+
+            var log = new LoggerConfiguration().WriteTo.Console()
+                                               .MinimumLevel.Debug()
+                                               .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                                               .Enrich.FromLogContext()
+                                               .WriteTo.Console()
+                                               .CreateLogger();
+
+            factory.AddSerilog();
+
+            return factory;
         }
     }
 }

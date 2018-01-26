@@ -73,6 +73,8 @@ namespace Stories.Controllers
         [HttpGet]
         public ActionResult Login(string returnUrl)
         {
+            logger.LogCritical("Test");
+
             if (CurrentUser.Identity.IsAuthenticated)
             {
                 return RedirectToAction(nameof(HomeController.Index), "Home");
