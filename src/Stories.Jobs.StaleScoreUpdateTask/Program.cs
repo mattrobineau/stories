@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using Stories.Data.DbContexts;
 using Stories.Ranking.Services;
 using System;
@@ -22,29 +22,35 @@ namespace Stories.Jobs.RankStories
             ConfigureServices();
             var dbContext = ServiceProvider.GetService<StoriesDbContext>();
             var rankService = ServiceProvider.GetService<IRankService>();
-            var logger = ServiceProvider.GetService<ILogger<Program>>();
 
             Task.Run(async () => {
                 // Cron job is setup to run every 12h. Date for the last 13 hours to avoid missing by minutes.
-                var updateLastDateTime = DateTime.UtcNow.AddHours(-13);
+                try
+                {
+                    var updateLastDateTime = DateTime.UtcNow.AddHours(-13);
 
-                var commentScores = await dbContext.CommentScores.Include(s => s.Comment)
-                                               .Where(s => updateLastDateTime <= s.ModifiedDate)
-                                               .ToListAsync();
+                    var commentScores = await dbContext.CommentScores.Include(s => s.Comment)
+                                                   .Where(s => updateLastDateTime <= s.ModifiedDate)
+                                                   .ToListAsync();
 
-                foreach (var score in commentScores)
-                    rankService.CalculateCommentScore(score.Comment);
+                    foreach (var score in commentScores)
+                        rankService.CalculateCommentScore(score.Comment);
 
-                var storyScores = await dbContext.StoryScores.Include(s => s.Story)
-                                                    .Where(s => updateLastDateTime <= s.ModifiedDate)
-                                                    .ToListAsync();
+                    var storyScores = await dbContext.StoryScores.Include(s => s.Story)
+                                                        .Where(s => updateLastDateTime <= s.ModifiedDate)
+                                                        .ToListAsync();
 
-                foreach (var score in storyScores)
-                    rankService.CalculateStoryScore(score.Story);
+                    foreach (var score in storyScores)
+                        rankService.CalculateStoryScore(score.Story);
 
-                var rows = await dbContext.SaveChangesAsync();
+                    var rows = await dbContext.SaveChangesAsync();
 
-                logger.LogInformation($"RankStories job updated {rows} scores.");
+                    Log.Information($"RankStories job updated {rows} scores.");
+                }
+                catch(Exception e)
+                {
+                    Log.Fatal(e, "Unknown error occured");
+                }
             }).GetAwaiter().GetResult();
 
             return;
@@ -69,7 +75,9 @@ namespace Stories.Jobs.RankStories
             services.AddLogging();
             ServiceProvider = services.BuildServiceProvider();
 
-            var loggerFactory = ServiceProvider.GetService<ILoggerFactory>();
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration)
+                .CreateLogger();
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
+using Serilog;
 using Stories.Data.DbContexts;
 using Stories.Messaging.Configuration;
 using Stories.Messaging.Constants;
@@ -11,11 +12,10 @@ using Stories.Ranking.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using RabbitMQ.Client;
-using System.Linq;
 
 namespace Stories.Messaging.RankComsumer
 {
@@ -33,7 +33,6 @@ namespace Stories.Messaging.RankComsumer
                 var dbContext = ServiceProvider.GetService<StoriesDbContext>();
                 var rankService = ServiceProvider.GetService<IRankService>();
                 var provider = ServiceProvider.GetService<IMessageService>();
-                var logger = ServiceProvider.GetService<ILogger<Program>>();
 
                 IModel model = null;
                 try
@@ -42,7 +41,7 @@ namespace Stories.Messaging.RankComsumer
                 }
                 catch (Exception e)
                 {
-                    //logger.LogCritical($"Unable to get connection to RabbitMQ: {e.ToString()}", e.ToString());
+                    Log.Fatal(e, $"Unable to get connection to RabbitMQ: {e.ToString()}");
                     return;
                 }
 
@@ -72,7 +71,7 @@ namespace Stories.Messaging.RankComsumer
 
                             if (!updated.Result)
                             {
-                                logger.LogWarning($"Failed to update. StoryId = {id}");
+                                Log.Information($"Failed to update. StoryId = {id}");
                                 model.BasicReject(result.DeliveryTag, true);
                                 continue;
                             }
@@ -81,12 +80,12 @@ namespace Stories.Messaging.RankComsumer
                         }
                         catch (Exception e)
                         {
-                            //logger.LogCritical($"Story -- Exception attempting to handle message body: {result.Body}", e);
+                            Log.Fatal(e, $"Story -- Exception attempting to handle message body: {result.Body}");
                             model.BasicReject(result.DeliveryTag, false);
                         }
                     }
 
-                    logger.LogDebug($"Updated story scores for {handledIds.Count}: {string.Join(",", handledIds.Select(x => x.ToString()).ToArray())}");
+                    Log.Debug($"Updated story scores for {handledIds.Count}: {string.Join(",", handledIds.Select(x => x.ToString()).ToArray())}");
                     handledIds.Clear();
 
                     for (var i = 0; i < 20; i++)
@@ -109,7 +108,7 @@ namespace Stories.Messaging.RankComsumer
 
                             if (!updated.Result)
                             {
-                                logger.LogWarning($"Failed to update. CommentId = {id}");
+                                Log.Warning($"Failed to update. CommentId = {id}");
                                 model.BasicReject(result.DeliveryTag, false);
                                 continue;
                             }
@@ -118,20 +117,22 @@ namespace Stories.Messaging.RankComsumer
                         }
                         catch (Exception e)
                         {
-                            //logger.LogCritical($"Comment -- Exception attempting to handle message body: {result.Body} -- Stack: {e.ToString()}", e);
+                            Log.Fatal(e, $"Comment -- Exception attempting to handle message body: {result.Body} -- Stack: {e.ToString()}");
                             model.BasicReject(result.DeliveryTag, false);
                         }
                     }
-                    logger.LogDebug($"Updated comment scores for {handledIds.Count}: {string.Join(",", handledIds.Select(x => x.ToString()).ToArray())}");
+                    Log.Debug($"Updated comment scores for {handledIds.Count}: {string.Join(",", handledIds.Select(x => x.ToString()).ToArray())}");
                     handledIds.Clear();
 
                     Thread.Sleep(5 * 60 * 1000); // 5mins
                 }
             }
             catch (Exception e)
-            {
-                Console.Write(e.ToString());
+            {                
+                Log.Fatal(e, "Unknown error");
             }
+            
+            Log.CloseAndFlush();
         }
 
         private static async Task<bool> UpdateStoryRank(IDbContext dbContext, IRankService rankService, int storyId)
@@ -181,9 +182,9 @@ namespace Stories.Messaging.RankComsumer
 
             ServiceProvider = services.BuildServiceProvider();
 
-            var loggerFactory = ServiceProvider.GetService<ILoggerFactory>();
-            //loggerFactory.AddNLog();
-            //loggerFactory.ConfigureNLog("nlog.config");
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration)
+                .CreateLogger();
         }
     }
 }
