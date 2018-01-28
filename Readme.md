@@ -107,6 +107,6 @@ echo ASPNETCORE_ENVIRONMENT=Production >> /etc/environment
 
 The application has been tested with the following dependencies
 
-+ .Net Core v1.0.5
++ .Net Core Runtime v2.0.5
 + RabbitMQ 3.6.10
 + Debian Jessie (8)
