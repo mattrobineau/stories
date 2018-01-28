@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Serilog;
 using Stories.Constants;
 using Stories.Models.Users;
 using Stories.Models.ViewModels;
@@ -120,7 +119,7 @@ namespace Stories.Controllers
 
         public async Task<ActionResult> Logout()
         {
-            await HttpContext.Authentication.SignOutAsync("StoriesCookieAuthentication");
+            await HttpContext.SignOutAsync("StoriesCookieAuthentication");
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
