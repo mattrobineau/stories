@@ -12,7 +12,7 @@ The following bash commands will install the `.NET Core 1.0.5 runtime (LTS)`. If
 
 ``` bash
 sudo apt-get install curl libunwind8 gettext
-curl -sSL -o dotnet.tar.gz https://download.microsoft.com/download/2/4/A/24A06858-E8AC-469B-8AE6-D0CEC9BA982A/dotnet-debian-x64.1.0.5.tar.gz
+curl -sSL -o dotnet.tar.gz https://download.microsoft.com/download/5/F/0/5F0362BD-7D0A-4A9D-9BF9-022C6B15B04D/dotnet-runtime-2.0.0-linux-x64.tar.gz
 sudo mkdir -p /opt/dotnet && sudo tar zxf dotnet.tar.gz -C /opt/dotnet
 sudo ln -s /opt/dotnet/dotnet /usr/local/bin
 ```
