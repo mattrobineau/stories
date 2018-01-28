@@ -185,8 +185,6 @@ namespace Stories
             LoggerFactory factory = new LoggerFactory();
 
             var log = new LoggerConfiguration().ReadFrom.Configuration(Configuration)
-                                               .MinimumLevel.Debug()
-                                               .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                                                .Enrich.FromLogContext()
                                                .CreateLogger();
 
