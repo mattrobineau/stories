@@ -36,10 +36,4 @@
     <ProjectReference Include="..\Stories.Ranking\Stories.Ranking.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="nlog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

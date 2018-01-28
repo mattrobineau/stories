@@ -24,6 +24,7 @@ namespace Stories.Controllers
                 return View(await StoryService.GetTop(page, 20, userId));
             }
 
+            Logger.LogInformation("Test");
             return View(await StoryService.GetTop(page, 20, null));
         }
 

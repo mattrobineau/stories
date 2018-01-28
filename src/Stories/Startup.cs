@@ -177,18 +177,17 @@ namespace Stories
             container.Register(() => Configuration.GetSection("Invites").Get<InviteOptions>(), Lifestyle.Scoped);
 
             container.Register(ConfigureLogger, Lifestyle.Singleton);
-            container.Register(typeof(ILogger<>), typeof(LoggerAdapter<>));
+            container.Register(typeof(ILogger<>), typeof(LoggerAdapter<>), Lifestyle.Scoped);
         }
 
         private ILoggerFactory ConfigureLogger()
         {
             LoggerFactory factory = new LoggerFactory();
 
-            var log = new LoggerConfiguration().WriteTo.Console()
+            var log = new LoggerConfiguration().ReadFrom.Configuration(Configuration)
                                                .MinimumLevel.Debug()
                                                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                                                .Enrich.FromLogContext()
-                                               .WriteTo.Console()
                                                .CreateLogger();
 
             factory.AddSerilog();

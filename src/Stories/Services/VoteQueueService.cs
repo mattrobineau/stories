@@ -1,6 +1,6 @@
-﻿using Stories.Messaging.Constants;
+﻿using Microsoft.Extensions.Logging;
+using Stories.Messaging.Constants;
 using Stories.Messaging.Services;
-using Stories.Logging;
 using System;
 
 namespace Stories.Services
@@ -8,9 +8,9 @@ namespace Stories.Services
     public class VoteQueueService : IVoteQueueService
     {
         private readonly IMessageService MessageService;
-        private readonly ILogger Logger;
+        private readonly ILogger<VoteQueueService> Logger;
 
-        public VoteQueueService(IMessageService messageService, ILogger logger)
+        public VoteQueueService(IMessageService messageService, ILogger<VoteQueueService> logger)
         {
             MessageService = messageService;
             Logger = logger;
@@ -25,7 +25,7 @@ namespace Stories.Services
             }
             catch(Exception e)
             {
-                Logger.Log("Message service story publishing failed.", e);
+                Logger.LogCritical("Message service story publishing failed.", e);
             }
         }
         public void QueueCommentVote(int commentId)
@@ -36,7 +36,7 @@ namespace Stories.Services
             }
             catch(Exception e)
             {
-                Logger.Log("Message service comment publishing failed.", e);
+                Logger.LogCritical("Message service comment publishing failed.", e);
             }
         }
     }
