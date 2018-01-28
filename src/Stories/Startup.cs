@@ -8,12 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
 using Stories.Configuration;
 using Stories.Data.DbContexts;
 using Stories.Extensions;
+using Stories.Logging;
 using Stories.Messaging.Configuration;
 using Stories.Messaging.Providers;
 using Stories.Messaging.Services;
@@ -21,13 +23,6 @@ using Stories.Services;
 using Stories.Validation.BusinessRules;
 using Stories.Validation.Validators;
 using System.Reflection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Serilog;
-using Serilog.Events;
-using Stories.Logging;
 
 namespace Stories
 {
@@ -92,7 +87,7 @@ namespace Stories
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
@@ -184,11 +179,11 @@ namespace Stories
         {
             LoggerFactory factory = new LoggerFactory();
 
-            var log = new LoggerConfiguration().ReadFrom.Configuration(Configuration)
+            var logger = new LoggerConfiguration().ReadFrom.Configuration(Configuration)
                                                .Enrich.FromLogContext()
                                                .CreateLogger();
 
-            factory.AddSerilog();
+            factory.AddSerilog(logger);
 
             return factory;
         }

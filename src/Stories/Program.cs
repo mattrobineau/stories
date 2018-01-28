@@ -13,7 +13,6 @@ namespace Stories
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
-                //.UseSerilog()
                 .Build();
 
             host.Run();

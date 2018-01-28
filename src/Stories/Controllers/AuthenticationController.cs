@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using Stories.Constants;
 using Stories.Models.Users;
 using Stories.Models.ViewModels;
@@ -73,8 +74,6 @@ namespace Stories.Controllers
         [HttpGet]
         public ActionResult Login(string returnUrl)
         {
-            logger.LogCritical("Test");
-
             if (CurrentUser.Identity.IsAuthenticated)
             {
                 return RedirectToAction(nameof(HomeController.Index), "Home");

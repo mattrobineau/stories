@@ -72,7 +72,6 @@ namespace Stories.Jobs.RankStories
             services.AddDbContext<StoriesDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("NpgsqlConnection")));
             services.AddScoped<IDbContext>(s => s.GetService<StoriesDbContext>());
             services.AddScoped<IRankService, RankService>();
-            services.AddLogging();
             ServiceProvider = services.BuildServiceProvider();
 
             Log.Logger = new LoggerConfiguration()
