@@ -55,8 +55,6 @@ namespace Stories
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddApplicationInsightsTelemetry(Configuration); Add serilog sync instead
-
             services.AddDbContext<StoriesDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("NpgsqlConnection"), b => b.MigrationsAssembly("Stories")), ServiceLifetime.Scoped);
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -75,6 +73,7 @@ namespace Stories
 
             services.AddSingleton<IControllerActivator>(new SimpleInjectorControllerActivator(container));
             services.AddSingleton<IViewComponentActivator>(new SimpleInjectorViewComponentActivator(container));
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -87,8 +86,9 @@ namespace Stories
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddConsole();
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
             InitializeContainer(app);
@@ -182,8 +182,8 @@ namespace Stories
             var logger = new LoggerConfiguration().ReadFrom.Configuration(Configuration)
                                                .Enrich.FromLogContext()
                                                .CreateLogger();
-
-            factory.AddSerilog(logger);
+            Log.Logger = logger;
+            factory.AddSerilog();
 
             return factory;
         }

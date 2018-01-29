@@ -108,6 +108,7 @@ namespace Stories.Services
 
             var stories = await StoriesDbContext.Stories.Include(s => s.Comments)
                                                         .Include(s => s.Score)
+                                                        .Include(s => s.User)
                                                         .OrderByDescending(s => s.Score != null)
                                                         .ThenBy(sort)
                                                         .ThenByDescending(s => s.CreatedDate)
@@ -135,8 +136,6 @@ namespace Stories.Services
 
         private StorySummaryViewModel MapToStorySummaryViewModel(Story story, string hashId, Guid? userId, bool userUpvoted, bool userFlagged)
         {
-            var user = StoriesDbContext.Users.Single(u => u.Id == userId);
-
             UriBuilder uri = null;
 
             if (string.IsNullOrEmpty(story.Url))
@@ -161,7 +160,7 @@ namespace Stories.Services
                 Url = uri.ToString(),
                 Hostname = uri.Host,
                 Upvotes = story.Upvotes,
-                SubmitterUsername = user.IsBanned ? "[banned]" : user.Username,
+                SubmitterUsername = story.User.IsBanned ? "[banned]" : story.User.Username,
                 Slug = story.Title.ToSlug(),
                 IsAuthor = story.UserIsAuthor,
                 UserUpvoted = userUpvoted,

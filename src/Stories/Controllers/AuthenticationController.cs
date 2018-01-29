@@ -142,7 +142,6 @@ namespace Stories.Controllers
                 identity.AddClaim(new Claim(ClaimTypes.Role, role.Name));
             }
 
-            //await HttpContext.Authentication.SignInAsync("StoriesCookieAuthentication", new ClaimsPrincipal(identity));
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
             return true;
