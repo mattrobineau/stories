@@ -52,8 +52,17 @@
     <div class="container container-fluid body-content">
         <div id="error" class="hidden row"></div>
         @RenderBody()
-        <footer class="container text-center fixed-bottom">
-            <p>&copy; 2017 - dotnetsignals.com</p>
+    </div>
+    <div class="footer">
+        <footer>
+            <div>
+                <a href="/home/guidelines">Guidelines</a>
+                <a href="/home/faq">FAQ</a>
+                <a href="/hmoe/about">About</a>
+            </div>
+            <div>
+                <p>&copy; 2017 - dotnetsignals.com</p>
+            </div>
         </footer>
     </div>
     <environment names="Development">
@@ -67,7 +76,7 @@
         <script src="~/js/time.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4= sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script> 
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4= sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.js" integrity="sha256-2/3+Q1kMYR8MDaqFPNBgmLgiqWJjySkg1wqLx/iE5Zo= sha384-lw3tyCtDwN8EVMkpY/PYQH+ZQjVZWAwlUE2X0XjYQpH4BQXgI4dgXwWJDarEB9o2 sha512-imNwrSU7maHt4HR952Mqfm/dyloFTOXSICVfhol9Cwcwn6Qpg8BKQlEgKC+RZ8aVRHfmPE1SJCCojiOcMNGvFw==" crossorigin="anonymous"></script>

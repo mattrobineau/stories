@@ -220,8 +220,10 @@ body {
     font-family: $font;
     font-weight: 400;
     color: $text-color;
-    padding: 48px 0;
-    padding-bottom:70px;
+    padding: 48px 0 100px;
+    min-height: 100vh;
+    position: relative;
+    margin: 0;
 }
 
 nav {
@@ -296,4 +298,18 @@ div#error {
 
 .form-control {
     font-size: 14px;
+}
+
+.footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    background-color: #efefef;
+    text-align: center;
+}
+
+.footer a {
+    margin: 12px;
 }

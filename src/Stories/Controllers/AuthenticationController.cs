@@ -119,7 +119,7 @@ namespace Stories.Controllers
 
         public async Task<ActionResult> Logout()
         {
-            await HttpContext.SignOutAsync("StoriesCookieAuthentication");
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 

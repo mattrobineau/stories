@@ -148,6 +148,7 @@ namespace Stories.Controllers
                     Content = comment.Content,
                     HashId = ids.Encode(comment.Id),
                     IsEdited = comment.IsEdited,
+                    IsOwner = userId.Equals(comment.SubmitterUserId),
                     StoryHashId = ids.Encode(comment.StoryId),
                     SubmittedDate = comment.SubmittedDate.ToString("o"),
                     Upvotes = comment.Upvotes,

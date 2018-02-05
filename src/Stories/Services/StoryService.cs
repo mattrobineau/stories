@@ -61,7 +61,8 @@ namespace Stories.Services
             var ids = new Hashids(minHashLength: 5);
             var storyId = ids.Decode(hashId).First();
 
-            var story = await StoriesDbContext.Stories.SingleOrDefaultAsync(s => s.Id == storyId);
+            var story = await StoriesDbContext.Stories.Include(s => s.User)
+                                                      .SingleOrDefaultAsync(s => s.Id == storyId);
 
             if (story == null)
                 return null;
@@ -87,7 +88,7 @@ namespace Stories.Services
                                                           .ToListAsync();
 
             foreach (var comment in comments.OrderByDescending(c => c.Score?.Value).Where(c => c.ParentCommentId == null))
-                model.Comments.Add(MapCommentToCommentViewModel(comment, upvotedComments, flaggedComments));
+                model.Comments.Add(MapCommentToCommentViewModel(comment, upvotedComments, flaggedComments, userId));
 
             return model;
         }
@@ -170,13 +171,13 @@ namespace Stories.Services
             };
         }
 
-        private CommentViewModel MapCommentToCommentViewModel(Comment comment, List<int> upvotedComments, List<int> flaggedComments)
+        private CommentViewModel MapCommentToCommentViewModel(Comment comment, List<int> upvotedComments, List<int> flaggedComments, Guid? userId)
         {
             var model = new CommentViewModel();
 
             foreach (var reply in comment.Replies.OrderByDescending(c => c?.Score?.Value))
             {
-                model.Replies.Add(MapCommentToCommentViewModel(reply, upvotedComments, flaggedComments));
+                model.Replies.Add(MapCommentToCommentViewModel(reply, upvotedComments, flaggedComments, userId));
             }
 
             var hashIds = new Hashids(minHashLength: 5);
@@ -190,6 +191,9 @@ namespace Stories.Services
             model.Upvotes = comment.Upvotes;
             model.UserUpvoted = upvotedComments.Any(id => id == comment.Id);
             model.UserFlagged = flaggedComments.Any(id => id == comment.Id);
+
+            if (userId != null)
+                model.IsOwner = userId == comment.UserId;
 
             return model;
         }

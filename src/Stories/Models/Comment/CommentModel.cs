@@ -11,6 +11,7 @@ namespace Stories.Models.Comment
         public int StoryId { get; set; }
         public DateTime SubmittedDate { get; set; }
         public string SubmittedUsername { get; set; }
+        public Guid SubmitterUserId { get; set; }
         public int Upvotes { get; set; }
         public bool UserFlagged { get; set; }
         public bool UserUpvoted { get; set; }

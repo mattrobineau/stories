@@ -13,6 +13,7 @@ namespace Stories.Models.ViewModels
         public string Content { get; set; }
         public string StoryHashId { get; set; }
         public bool IsEdited { get; set; }
+        public bool IsOwner { get; set; }
         public List<CommentViewModel> Replies { get; set; }
         public string SubmittedDate { get; set; }
         public int Upvotes { get; set; }

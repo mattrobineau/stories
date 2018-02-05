@@ -65,6 +65,7 @@ namespace Stories.Services
                     StoryId = comment.StoryId,
                     SubmittedDate = comment.CreatedDate,
                     SubmittedUsername = submitterUsername,
+                    SubmitterUserId = comment.UserId,
                     Upvotes = comment.Upvotes,
                     UserFlagged = comment.Flags.Any(f => f.UserId == callingUserId),
                     UserUpvoted = upvotedCommentIds.Contains(comment.Id)
