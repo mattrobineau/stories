@@ -1,11 +1,5 @@
-# What is dotnetsignals?
-Dotnetsignals (.Net Signals) is a link aggregator written entirely in C# and running on .Net Core.
-
-The current goal is to build a community around sharing .Net knowledge by giving its users a place to share relevant .Net links to articles, blogs, projects, etc. The community is able to filter out noise by voting to the top the links the community deems to be the best.
-
-# Instructions on running the dotnetsignals project
-
-Although dotnetsignals was created for use on our [website](https://dotnetsignals.com), it can be used by others seeking to form similar communities. The source code has been written to allow for other uses by using non-specific .net names.
+# What is stories?
+Stories is a link aggregator written in C# and running on .Net Core.
 
 ## Install dotnet on linux
 The following bash commands will install the `.NET Core 1.0.5 runtime (LTS)`. If you wish to change the version, replace the download link in the `curl` line.
@@ -67,8 +61,8 @@ The `RankConsumer` can also be run by `systemd` using this configuration.
 Description=.Net Signals Rank Consumer
 
 [Service]
-WorkingDirectory=/opt/dotnetsignals/rankconsumer
-ExecStart=/usr/local/bin/dotnet /opt/dotnetsignals/rankconsumer/Stories.Messaging.RankConsumer.dll
+WorkingDirectory=/opt/stories/rankconsumer
+ExecStart=/usr/local/bin/dotnet /opt/stories/rankconsumer/Stories.Messaging.RankConsumer.dll
 Restart=always
 RestartSec=10
 SyslogIdentifier=dotnet-stories-rankconsumer
@@ -90,7 +84,7 @@ This application will update the scores of stories/comments that haven't had any
 Add the following to `crontab`
 
 ```bash
-1 */12 * * *  /usr/local/bin/dotnet /opt/dotnetsignals/stalescoreupdater/Stories.Jobs.StaleScoreUpdateTask.dll
+1 */12 * * *  /usr/local/bin/dotnet /opt/stories/stalescoreupdater/Stories.Jobs.StaleScoreUpdateTask.dll
 ```
 
 Make sure to change the location of your dll.
